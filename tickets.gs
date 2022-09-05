@@ -26,32 +26,33 @@ found[2] = 8
 found[3] = 9
 found[4] = 4
 
-playertypes = [128,SE_INT]
+playertypes = [129,SE_INT]
 global mtfticks, chaosticks
 
 def loop()
     local debounce = True
-    for plr = 1; plr < 64; plr++
+    for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) == 1 then
-            for y = 0; y < len playertypes; y = y + 2 // check if in list
-                print(y)
+            for y = 0; y < 130; y = y + 2 // check if in list
                 if playertypes[y] == plr then
                     playertypes[y+1] = GetPlayerType(plr)
+                    print(playertypes[y+1])
                     debounce = False
                     break
                 end
             end
             if debounce == True then
-                for y = 0; y < 128; y = y + 2 //if not in list, add
+                for y = 0; y < 130; y = y + 2 //if not in list, add
                     if playertypes[y] == 0 then
                         playertypes[y] = plr
                         playertypes[y+1] = GetPlayerType(plr)
+                        print(playertypes[y+1])
                         break
                     end
                 end
             end
         else
-            for y = 0; y < len playertypes; y = y + 2 //Remove from list
+            for y = 0; y < 130; y = y + 2 //Remove from list
                 if playertypes[y] == plr then
                     playertypes[y] = 0
                     playertypes[y+1] = 0
@@ -66,6 +67,8 @@ public def OnPlayerGetNewRole()
 end
 
 public def OnRoundStarted()
+    SetMTFTickets(10)
+    SetChaosTickets(10)
     mtfticks = GetMTFTickets()
     chaosticks = GetChaosTickets()
     print(chaosticks)
@@ -87,9 +90,11 @@ end
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter) //What killed
     if killerrole == 7 or killerrole == 3 then
-        for plr = 0; plr < len playertypes; plr = plr + 2
+        for plr = 0; plr < 130; plr = plr + 2
+            print("needstobereason")
             if playertypes[plr] == shootee then //Find who was killed and their previous role
-                for y; y < len scps; y++
+                for y; y < 9; y++
+                    print("work")
                     if playertypes[plr+1] == found[y] or playertypes[plr+1] == 13 then
                         print("foundation scum")
                         chaosticks++
@@ -107,23 +112,21 @@ public def OnPlayerKillPlayer(shooter,shootee)
             end
         end
     end  
-    for staff; staff < len found; staff++ //if not cd, look for security player
+    for staff; staff < 5; staff++ //if not cd, look for security player
         if killerrole == found[staff] then
-            for plr = 0; plr < len playertypes; plr = plr + 2
-                if playertypes[plr] == shootee then
-                    if playertypes[plr+1] == 7 or playertypes[plr+1] == 13 then
-                        print("Hostile terminated")
-                        mtfticks++
-                        SetMTFTickets(mtfticks)
-                        break
-                    else
-                        for y = 0; y < len scps; y++
-                            if playertypes[plr+1] == scps[y] then
-                                print("SCP Instance contained")
-                                mtfticks = mtfticks + 3
-                                SetMTFTickets(mtfticks)
-                                break
-                            end
+            for plr = 0; plr < 130; plr = plr + 2
+                if playertypes[plr+1] == 7 or playertypes[plr+1] == 13 then
+                    print("Hostile terminated")
+                    mtfticks++
+                    SetMTFTickets(mtfticks)
+                    break
+                else
+                    for y = 0; y < len scps; y++
+                        if playertypes[plr+1] == scps[y] then
+                            print("SCP Instance contained")
+                            mtfticks = mtfticks + 3
+                            SetMTFTickets(mtfticks)
+                            break
                         end
                     end
                 end
