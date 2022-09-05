@@ -100,7 +100,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
                         for y; y < len scps; y++
                             if playertypes[plr+1] == scps[y] then
                                 print("SCP Instance contained")
-                                mtfticks = mtfticks + 2
+                                mtfticks = mtfticks + 3
                                 SetMTFTickets(mtfticks)
                                 break
                             end
