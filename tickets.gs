@@ -1,5 +1,8 @@
 #include "includes\multiplayer_core.inc"
 
+global scps = [9,SE_INT]
+global cd = [2,SE_INT]
+global found = [5,SE_INT]
 //tickets
 scps[1] = 5
 scps[2] = 6
@@ -13,6 +16,7 @@ scps[6] = 16
 //Class D Team
 cd[1] = 3
 cd[0] = 7
+
 //Security
 found[0] = 2
 found[1] = 1
@@ -55,15 +59,22 @@ end
 public def OnRoundStarted()
     mtfticks = GetMTFTickets()
     chaosticks = GetChaosTickets()
+    print(chaosticks)
+    print(mtfticks)
 end
 
 public def OnSpawnMTF()
+    print(mtfticks)
     mtfticks = GetMTFTickets()
+    print(mtfticks)
 end
 
 public def OnSpawnChaos()
+    print(chaosticks)
     chaosticks = GetChaosTickets()
+    print(chaosticks)
 end
+
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter) //What killed
     if killerrole == 7 or killerrole == 3 then
