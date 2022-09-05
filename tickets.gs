@@ -31,10 +31,15 @@ def loop()
                 if playertypes[y] == 0 then
                     playertypes[y] = plr
                     playertypes[y+1] = GetPlayerType(plr)
+                    break
                 end
             end
         end
     end
+end
+
+public def OnPlayerGetNewRole()
+    loop()
 end
 
 public def OnRoundStarted()
@@ -42,14 +47,21 @@ public def OnRoundStarted()
     chaosticks = GetChaosTickets()
 end
 
+public def OnSpawnMTF()
+    mtfticks = GetMTFTickets()
+end
+
+public def OnSpawnChaos()
+    chaosticks = GetChaosTickets()
+end
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter)
-    if killerole == 7 or killerrole == 3 then
+    if killerrole == 7 or killerrole == 3 then
         for plr; plr < len playertypes; plr = plr + 2
             if playertypes[plr] == shootee then
                 for y; y < 9; y++
                     if playertype[plr+1] == found[y] then
-                        chaosticks++
+                        mtfticks++
                         SetChaosTickets(chaosticks)
                         break
                     end
@@ -62,5 +74,23 @@ public def OnPlayerKillPlayer(shooter,shootee)
                 break
             end
         end
-    end            
+    end
+    for staff; staff < len found; staff++
+        if killerrole == found[staff] then
+            for plr; plr < len playertypes; plr = plr + 2
+                if playertypes[plr] == shootee then
+                    if playertype[plr+1] == cd[y] then
+                        chaosticks++
+                        SetChaosTickets(chaosticks)
+                        break
+                    end
+                    if playertypes[plr+1] == scps[y] then
+                        chaosticks = chaosticks + 2
+                        SetChaosTickets(chaosticks)
+                        break
+                    end
+                end
+            end                    
+        end
+    end
 end
