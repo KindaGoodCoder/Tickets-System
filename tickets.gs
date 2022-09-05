@@ -31,7 +31,7 @@ def loop()
     local debounce = True
     for plr = 1; plr < 64; plr++
         if IsPlayerConnected(plr) == 1 then
-            for y = 0; y < 128; y = y + 2 // check if in list
+            for y = 0; y < len playertypes; y = y + 2 // check if in list
                 print(y)
                 if playertypes[y] == plr then
                     playertypes[y+1] = GetPlayerType(plr)
@@ -40,7 +40,7 @@ def loop()
                 end
             end
             if debounce == True then
-                for y = 0; y < 128; y = y + 2 //if not in list, add
+                for y = 0; y < 64; y = y + 2 //if not in list, add
                     if playertypes[y] == 0 then
                         playertypes[y] = plr
                         playertypes[y+1] = GetPlayerType(plr)
@@ -91,14 +91,14 @@ public def OnPlayerKillPlayer(shooter,shootee)
                         print("Good intel")
                         chaosticks = chaosticks + 2
                         SetChaosTickets(chaosticks)
-                        return //end function
+                        return //end
                     end
                 end
                 return
             end
         end
     end
-    for staff; staff < len found; staff++
+    for staff; staff < len found; staff++ //if not cd, look for security player
         if killerrole == found[staff] then
             for plr; plr < len playertypes; plr = plr + 2
                 if playertypes[plr] == shootee then
