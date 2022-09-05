@@ -64,3 +64,22 @@ public def OnPlayerKillPlayer(shooter,shootee)
         end
     end            
 end
+
+public def OnPlayerEscape(plr, _, escaped)
+    if escaped == 7 then
+        chaosticks = chaosticks + 2
+        SetChaosTickets(chaosticks)
+    end
+    if escaped = 1 then
+        mtfticks = mtfticks + 2
+        SetMTFTickets(mtfticks)
+    end
+end
+
+public def OnSpawnMTF()
+    mtfticks = GetMTFTickets()
+end
+
+public def OnSpawnChaos()
+    chaosticks = GetChaosTickets()
+end
