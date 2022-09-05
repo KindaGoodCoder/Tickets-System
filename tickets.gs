@@ -4,6 +4,8 @@ global scps = [9,SE_INT]
 global cd = [2,SE_INT]
 global found = [5,SE_INT]
 //tickets
+
+//SCPs (Excluding 049-2 cause its "special")
 scps[1] = 5
 scps[2] = 6
 scps[3] = 10
@@ -40,12 +42,19 @@ def loop()
                 end
             end
             if debounce == True then
-                for y = 0; y < 64; y = y + 2 //if not in list, add
+                for y = 0; y < 128; y = y + 2 //if not in list, add
                     if playertypes[y] == 0 then
                         playertypes[y] = plr
                         playertypes[y+1] = GetPlayerType(plr)
                         break
                     end
+                end
+            end
+        else
+            for y = 0; y < len playertypes; y = y + 2 //Remove from list
+                if playertypes[y] == plr then
+                    playertypes[y] = 0
+                    playertypes[y+1] = 0
                 end
             end
         end
