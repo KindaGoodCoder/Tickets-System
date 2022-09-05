@@ -69,7 +69,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
     if killerrole == 7 or killerrole == 3 then
         for plr; plr < len playertypes; plr = plr + 2
             if playertypes[plr] == shootee then //Find who was killed and their previous role
-                for y; y < 9; y++
+                for y; y < len scps; y++
                     if playertypes[plr+1] == found[y] or playertypes[plr+1] == 13 then
                         print("foundation scum")
                         chaosticks++
