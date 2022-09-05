@@ -128,7 +128,7 @@ public def OnPlayerEscape(plr, _, escaped)
         chaosticks = chaosticks + 2
         SetChaosTickets(chaosticks)
     end
-    if escaped = 1 then
+    if escaped == 1 then
         mtfticks = mtfticks + 2
         SetMTFTickets(mtfticks)
     end
