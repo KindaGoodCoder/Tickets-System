@@ -26,16 +26,18 @@ found[2] = 8
 found[3] = 9
 found[4] = 4
 
-playertypes = [129,SE_INT]
+playertypes = [127,SE_INT]
 global mtfticks, chaosticks
 
-public def OnServerStart()
-    for x = 0; x < 130;x = x + 2
-        playertypes[x] = x/2
+public def OnScriptLoaded()
+    for x = 0; x < 128; x = x + 2
+        playertypes[x] = x/2 + 1
+        print(playertypes[x])
     end
 end
+
 def loop(plr)
-    pass
+    0
 end
 
 public def OnPlayerGetNewRole(plr)
