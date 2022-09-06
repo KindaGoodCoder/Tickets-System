@@ -31,12 +31,14 @@ global mtfticks, chaosticks
 
 def loop()
     local debounce = True
+    local role
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) == 1 then
             for y = 0; y < 130; y = y + 2 // check if in list
                 if playertypes[y] == plr then
-                    playertypes[y+1] = GetPlayerType(plr)
-                    print(playertypes[y+1])
+                    role = y + 1
+                    playertypes[role] = GetPlayerType(plr)
+                    print(playertypes[role])
                     debounce = False
                     break
                 end
@@ -44,9 +46,10 @@ def loop()
             if debounce == True then
                 for y = 0; y < 130; y = y + 2 //if not in list, add
                     if playertypes[y] == 0 then
+                        role = y + 1
                         playertypes[y] = plr
-                        playertypes[y+1] = GetPlayerType(plr)
-                        print(playertypes[y+1])
+                        playertypes[role] = GetPlayerType(plr)
+                        print(playertypes[role])
                         break
                     end
                 end
@@ -54,8 +57,9 @@ def loop()
         else
             for y = 0; y < 130; y = y + 2 //Remove from list
                 if playertypes[y] == plr then
+                    role = y + 1
                     playertypes[y] = 0
-                    playertypes[y+1] = 0
+                    playertypes[role] = 0
                 end
             end
         end
@@ -120,8 +124,8 @@ public def OnPlayerKillPlayer(shooter,shootee)
                     SetMTFTickets(mtfticks)
                     break
                 else
-                    for y = 0; y < len scps; y++
-                        if playertypes[plr+1] == scps[y] then
+                    for y = 0; y < 9; y++
+                        if playertypes[plr] == scps[y] then
                             print("SCP Instance contained")
                             mtfticks = mtfticks + 3
                             SetMTFTickets(mtfticks)
