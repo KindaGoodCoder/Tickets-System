@@ -29,45 +29,17 @@ found[4] = 4
 playertypes = [129,SE_INT]
 global mtfticks, chaosticks
 
-def loop()
-    local debounce = True
-    local role
-    for plr = 1; plr < 65; plr++
-        if IsPlayerConnected(plr) == 1 then
-            for y = 0; y < 130; y = y + 2 // check if in list
-                if playertypes[y] == plr then
-                    role = y + 1
-                    playertypes[role] = GetPlayerType(plr)
-                    print(playertypes[role])
-                    debounce = False
-                    break
-                end
-            end
-            if debounce == True then
-                for y = 0; y < 130; y = y + 2 //if not in list, add
-                    if playertypes[y] == 0 then
-                        role = y + 1
-                        playertypes[y] = plr
-                        playertypes[role] = GetPlayerType(plr)
-                        print(playertypes[role])
-                        break
-                    end
-                end
-            end
-        else
-            for y = 0; y < 130; y = y + 2 //Remove from list
-                if playertypes[y] == plr then
-                    role = y + 1
-                    playertypes[y] = 0
-                    playertypes[role] = 0
-                end
-            end
-        end
+public def OnServerStart()
+    for x = 0; x < 130;x = x + 2
+        playertypes[x] = x/2
     end
 end
+def loop(plr)
+    pass
+end
 
-public def OnPlayerGetNewRole()
-    CreateTimer("loop",1000,0) //make sure it runs after kill detect system
+public def OnPlayerGetNewRole(plr)
+    CreateTimer("loop",1000,0,plr) //make sure it runs after kill detect system
 end
 
 public def OnRoundStarted()
@@ -94,17 +66,19 @@ end
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter) //What killed
     if killerrole == 7 or killerrole == 3 then
+        local role
         for plr = 0; plr < 130; plr = plr + 2
             print("needstobereason")
             if playertypes[plr] == shootee then //Find who was killed and their previous role
+                role = plr+1
                 for y; y < 9; y++
                     print("work")
-                    if playertypes[plr+1] == found[y] or playertypes[plr+1] == 13 then
+                    if playertypes[role] == found[y] or playertypes[role] == 13 then
                         print("foundation scum")
                         chaosticks++
                         break
                     end
-                    if playertypes[plr+1] == scps[y] then
+                    if playertypes[role] == scps[y] then
                         print("Good intel")
                         chaosticks = chaosticks + 2
                         break
@@ -118,22 +92,25 @@ public def OnPlayerKillPlayer(shooter,shootee)
     for staff; staff < 5; staff++ //if not cd, look for security player
         if killerrole == found[staff] then
             for plr = 0; plr < 130; plr = plr + 2
-                if playertypes[plr+1] == 7 or playertypes[plr+1] == 13 then
-                    print("Hostile terminated")
-                    mtfticks++
-                    SetMTFTickets(mtfticks)
-                    break
-                else
-                    for y = 0; y < 9; y++
-                        if playertypes[plr] == scps[y] then
-                            print("SCP Instance contained")
-                            mtfticks = mtfticks + 3
-                            SetMTFTickets(mtfticks)
-                            break
+                if playertypes[plr] == shootee then
+                    role = plr+1
+                    if playertypes[role] == 7 or playertypes[role] == 13 then
+                        print("Hostile terminated")
+                        mtfticks++                        
+                        break
+                    else
+                        for y = 0; y < 9; y++
+                            if playertypes[role] == scps[y] then
+                                print("SCP Instance contained")
+                                mtfticks = mtfticks + 3
+                                break
+                            end
                         end
                     end
+                    SetMTFTickets(mtfticks)
+                    return  
                 end
-            end                    
+            end                            
         end     
     end    
 end
