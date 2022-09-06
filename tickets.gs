@@ -26,22 +26,26 @@ found[2] = 8
 found[3] = 9
 found[4] = 4
 
-playertypes = [127,SE_INT]
+global playertypes = [127,SE_INT]
 global mtfticks, chaosticks
 
 public def OnScriptLoaded()
-    for x = 0; x < 128; x = x + 2
-        playertypes[x] = x/2 + 1
-        print(playertypes[x])
+    for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
+        playertypes[x] = x/2 + 1 //Mathmatic genius
     end
 end
 
-def loop(plr)
-    0
+def loop(plr, role)
+    for x = 0; x < 128; x = x + 2
+        if playertypes[x] == plr then
+            playertypes[x+1] = role
+            break
+        end
+    end
 end
 
-public def OnPlayerGetNewRole(plr)
-    CreateTimer("loop",1000,0,plr) //make sure it runs after kill detect system
+public def OnPlayerGetNewRole(plr, role)
+    CreateTimer("loop", 5000, 0, plr, role) //make sure it runs after kill detect system
 end
 
 public def OnRoundStarted()
@@ -68,19 +72,18 @@ end
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter) //What killed
     if killerrole == 7 or killerrole == 3 then
-        local role
         for plr = 0; plr < 130; plr = plr + 2
             print("needstobereason")
             if playertypes[plr] == shootee then //Find who was killed and their previous role
-                role = plr+1
+                role = playertypes[y+1]
                 for y; y < 9; y++
                     print("work")
-                    if playertypes[role] == found[y] or playertypes[role] == 13 then
+                    if role == found[y] or role == 13 then
                         print("foundation scum")
                         chaosticks++
                         break
                     end
-                    if playertypes[role] == scps[y] then
+                    if role == scps[y] then
                         print("Good intel")
                         chaosticks = chaosticks + 2
                         break
@@ -95,14 +98,14 @@ public def OnPlayerKillPlayer(shooter,shootee)
         if killerrole == found[staff] then
             for plr = 0; plr < 130; plr = plr + 2
                 if playertypes[plr] == shootee then
-                    role = plr+1
-                    if playertypes[role] == 7 or playertypes[role] == 13 then
+                    role = playertypes[plr+1]
+                    if role == 7 or role == 13 then
                         print("Hostile terminated")
                         mtfticks++                        
                         break
                     else
                         for y = 0; y < 9; y++
-                            if playertypes[role] == scps[y] then
+                            if role == scps[y] then
                                 print("SCP Instance contained")
                                 mtfticks = mtfticks + 3
                                 break
