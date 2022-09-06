@@ -98,16 +98,15 @@ public def OnPlayerKillPlayer(shooter,shootee)
                     if playertypes[plr+1] == found[y] or playertypes[plr+1] == 13 then
                         print("foundation scum")
                         chaosticks++
-                        SetChaosTickets(chaosticks)
-                        return
+                        break
                     end
                     if playertypes[plr+1] == scps[y] then
                         print("Good intel")
                         chaosticks = chaosticks + 2
-                        SetChaosTickets(chaosticks)
-                        return //end
+                        break
                     end
-                end
+                end     
+                SetChaosTickets(chaosticks)           
                 return
             end
         end
