@@ -36,12 +36,8 @@ public def OnScriptLoaded()
 end
 
 def loop(plr, role)
-    for x = 0; x < 128; x = x + 2
-        if playertypes[x] == plr then
-            playertypes[x+1] = role
-            break
-        end
-    end
+    plr = 2*(plr - 1)+1
+    playertypes[plr] = role
 end
 
 public def OnPlayerGetNewRole(plr, role)
