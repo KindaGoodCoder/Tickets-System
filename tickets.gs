@@ -56,13 +56,13 @@ end
 
 public def OnSpawnMTF()
     print(mtfticks)
-    mtfticks = GetMTFTickets()
+    mtfticks = GetMTFTickets() - 1
     print(mtfticks)
 end
 
 public def OnSpawnChaos()
     print(chaosticks)
-    chaosticks = GetChaosTickets()
+    chaosticks = GetChaosTickets() - 1
     print(chaosticks)
 end
 
@@ -97,8 +97,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
                     role = playertypes[plr+1]
                     if role == 7 or role == 13 then
                         print("Hostile terminated")
-                        mtfticks++                        
-                        break
+                        mtfticks++
                     else
                         for y = 0; y < 9; y++
                             if role == scps[y] then
@@ -109,6 +108,8 @@ public def OnPlayerKillPlayer(shooter,shootee)
                         end
                     end
                     SetMTFTickets(mtfticks)
+                    print(mtfticks)
+                    print(GetMTFTickets())
                     return  
                 end
             end                            
