@@ -36,11 +36,12 @@ public def OnScriptLoaded()
 end
 
 def loop(plr, role)
-    plr = 2*(plr - 1)+1
+    plr = 2*plr - 1
     playertypes[plr] = role
+    print(playertypes[plr])
 end
 
-public def OnPlayerGetNewRole(plr, role)
+public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("loop", 5000, 0, plr, role) //make sure it runs after kill detect system
 end
 
@@ -67,13 +68,11 @@ end
 
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter) //What killed
-    if killerrole == 7 or killerrole == 3 then
+    if killerrole == 7 or killerrole == 3 then //if cd
         for plr = 0; plr < 130; plr = plr + 2
-            print("needstobereason")
-            if playertypes[plr] == shootee then //Find who was killed and their previous role
-                role = playertypes[y+1]
-                for y; y < 9; y++
-                    print("work")
+            if playertypes[plr] == shootee then //Find who was killed and their previous role                
+                role = playertypes[plr+1]
+                for y = 0; y < 9; y++
                     if role == found[y] or role == 13 then
                         print("foundation scum")
                         chaosticks++
@@ -84,8 +83,9 @@ public def OnPlayerKillPlayer(shooter,shootee)
                         chaosticks = chaosticks + 2
                         break
                     end
-                end     
-                SetChaosTickets(chaosticks)           
+                end                
+                SetChaosTickets(chaosticks)        
+                print(chaosticks)   
                 return
             end
         end
