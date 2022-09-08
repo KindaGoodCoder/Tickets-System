@@ -56,7 +56,7 @@ end
 
 public def OnSpawnMTF()
     print(mtfticks)
-    mtfticks = GetMTFTickets() - 1
+    mtfticks = GetMTFTickets()
     print(mtfticks)
 end
 
@@ -109,8 +109,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
                     end
                     SetMTFTickets(mtfticks)
                     print(mtfticks)
-                    print(GetMTFTickets())
-                    return  
+                    return
                 end
             end                            
         end     
