@@ -27,7 +27,7 @@ found[3] = 9
 found[4] = 4
 
 global playertypes = [127,SE_INT]
-global mtfticks, chaosticks
+global mtfticks, chaosticks =10
 
 public def OnScriptLoaded()
     for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
@@ -46,17 +46,15 @@ public def OnPlayerGetNewRole(plr, _, role)
 end
 
 public def OnRoundStarted()
-    SetMTFTickets(10)
-    SetChaosTickets(10)
-    mtfticks = GetMTFTickets()
-    chaosticks = GetChaosTickets()
+    SetMTFTickets(mtfticks)
+    SetChaosTickets(chaosticks)
     print(chaosticks)
     print(mtfticks)
 end
 
 public def OnSpawnMTF()
     print(mtfticks)
-    mtfticks = GetMTFTickets()
+    mtfticks = GetMTFTickets() - 1
     print(mtfticks)
 end
 
@@ -84,8 +82,8 @@ public def OnPlayerKillPlayer(shooter,shootee)
                         break
                     end
                 end                
-                SetChaosTickets(chaosticks)        
-                print(chaosticks)   
+                SetChaosTickets(chaosticks)
+                print(chaosticks)
                 return
             end
         end
