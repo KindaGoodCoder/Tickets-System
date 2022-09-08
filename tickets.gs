@@ -27,7 +27,7 @@ found[3] = 9
 found[4] = 4
 
 global playertypes = [127,SE_INT]
-global mtfticks, chaosticks = 0
+global mtfticks = 5,chaosticks = 5
 
 public def OnScriptLoaded()
     for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
@@ -87,7 +87,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
                 return
             end
         end
-    end
+    end  
     for staff; staff < 5; staff++ //if not cd, look for security player
         if killerrole == found[staff] then
             for plr = 0; plr < 130; plr = plr + 2
