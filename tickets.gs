@@ -66,6 +66,10 @@ public def OnSpawnChaos()
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
+    local mticks = GetMTFTickets()
+    local cticks = GetChaosTickets()
+    print("Chaosticks r "+cticks)
+    print("MTFticks r "+mticks)
     local killerrole = GetPlayerType(shooter) //What killed
     if killerrole == 7 or killerrole == 3 then //if cd
         for plr = 0; plr < 130; plr = plr + 2
