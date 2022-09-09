@@ -49,20 +49,28 @@ end
 public def OnRoundStarted()
     SetMTFTickets(mtfticks)
     SetChaosTickets(chaosticks)
-    print(chaosticks)
-    print(mtfticks)
+    print(GetChaosTickets())
+    print(GetMTFTickets())
 end
 
 public def OnSpawnMTF()
     print(mtfticks)
-    mtfticks = GetMTFTickets() - 1
-    print(mtfticks)
+    mtfticks = GetMTFTickets() - 2
+    if mtfticks < 1 then
+        SetMTFTickets(0)
+    end
+    print(GetMTFTickets())
+    print("MTF Ticks = "+mtfticks)
 end
 
 public def OnSpawnChaos()
     print(chaosticks)
-    chaosticks = GetChaosTickets() - 1
-    print(chaosticks)
+    chaosticks = GetChaosTickets() - 2
+    if chaosticks < 1 then
+        SetChaosTickets(0)
+    end
+    print(GetChaosTickets())
+    print("Chaos Ticks = "+chaosticks)
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
@@ -82,9 +90,9 @@ public def OnPlayerKillPlayer(shooter,shootee)
                         chaosticks = chaosticks + 2
                         break
                     end
-                end                
+                end
                 SetChaosTickets(chaosticks)
-                print(chaosticks)
+                print(GetChaosTickets())
                 return
             end
         end
@@ -106,8 +114,8 @@ public def OnPlayerKillPlayer(shooter,shootee)
                             end
                         end
                     end
-                    SetMTFTickets(mtfticks)
-                    print(mtfticks)
+                    SetMTFTickets(mtfticks+1)
+                    print(GetMTFTickets())
                     return
                 end
             end                            
