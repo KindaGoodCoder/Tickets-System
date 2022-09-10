@@ -1,8 +1,8 @@
 #include "includes\multiplayer_core.inc"
 
-global scps = [9,SE_INT]
-global cd = [2,SE_INT]
-global found = [5,SE_INT]
+const scps = [9,SE_INT]
+const cd = [2,SE_INT]
+const found = [5,SE_INT]
 //tickets
 
 //SCPs (Excluding 049-2 cause its "special")
