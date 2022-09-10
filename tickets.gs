@@ -46,7 +46,30 @@ public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 5000, 0, plr, role) //make sure it runs after kill detect system
 end
 
+public def OnPlayerConsole()
+    if msg == "spawnmtf" then 
+        SpawnMTF()
+    end
+    if msg == "spawnmtf" then 
+        SpawnChaos()
+    end
+    if msg == "setmtftickets" then
+        mtfticks = mtfticks + 5 
+    end
+    if msg == "setchaostickets" then
+        chaosticks = chaosticks + 5
+    end
+end
+
 public def SpawnMTF()
+    Spawn(mtfticks,1)
+end
+
+public def SpawnChaos()
+    Spawn(chaosticks,7)
+end
+
+def Spawn(*tickets,role)
     print("lego")
     local specs = [62,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
     local speccounter = 0
@@ -64,13 +87,13 @@ public def SpawnMTF()
         end
     end
     print(speccounter)
-    while mtfticks > 0 or speccounter > 0 or giveup < 63; giveup++
+    while tickets > 0 and speccounter > 0 and giveup < 63; giveup++
         index = rand(1,62)
         plr = specs[index]
         if IsPlayerConnected(plr) == 1 then
-            SetPlayerType(plr,1)
+            SetPlayerType(plr,role)
             specs[index] = 0
-            mtfticks = mtfticks - 1
+            tickets = tickets - 1
             speccounter = speccounter - 1
         end
     end
@@ -88,7 +111,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
     pass //life is mean
 end
 
-public def OnPlayerEscape(plr, _, escaped)
+public def OnPlayerEscape(_, _, escaped)
     if escaped == 7 then
         chaosticks = chaosticks + 2
     end
