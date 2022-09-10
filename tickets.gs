@@ -46,7 +46,7 @@ public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 5000, 0, plr, role) //make sure it runs after kill detect system
 end
 
-public def OnPlayerConsole()
+public def OnPlayerConsole() //bunch of commands to override the old ones
     if msg == "spawnmtf" then 
         SpawnMTF()
     end
