@@ -49,9 +49,13 @@ end
 public def OnPlayerConsole(_,msg) //bunch of commands to override the old ones
     if msg == "spawnmtf" then 
         SpawnMTF()
+        RemoveTimer(timer)
+        timer = CreateTimer("spawnwaves",300000,1)
     end
     if msg == "spawnchaos" then 
         SpawnChaos()
+        RemoveTimer(timer)
+        timer = CreateTimer("spawnwaves",300000,1)
     end
     if msg == "setmtftickets" then
         mtfticks = mtfticks + 5 
@@ -62,15 +66,32 @@ public def OnPlayerConsole(_,msg) //bunch of commands to override the old ones
 end
 
 public def SpawnMTF()
-    print("mango")
     mtfticks = Spawn(mtfticks,1)
+    local annoucement = OnSpawnMTF() //manually call mtf spawn event
+    local pain //false variable to act as a confirmation that OnSpawnMTF did not return a value
+    if annoucement == pain then
+        annoucement = "SFX\Character\MTF\Announc.ogg"
+    end
+    Announc(annoucement)
 end
 
+def Announc(annoucement)
+    for plr; plr < 65; plr++ //play sound for each connected player in server
+        if IsPlayerConnected(plr) then
+            PlaySound(plr,annoucement)
+        end
+    end
+end
 public def SpawnChaos()
     chaosticks = Spawn(chaosticks,7)
+    local annoucement = OnSpawnChaos() //Manually call chaos spawn event
+    local pain //false variable to act as a confirmation that OnSpawnChaos did not return a value
+    if annoucement != pain then
+        Announc(annoucement)
+    end
 end
 
-def Spawn(tickets,role)
+def Spawn(tickets,role) //Determine spawnwave mechanic
     local specs = [62,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
     local speccounter = 0
     for plr = 1; plr < 65; plr++
@@ -86,13 +107,9 @@ def Spawn(tickets,role)
             end
         end
     end
-    print(speccounter)
-    while tickets > 0 and speccounter > 0;
-        print("mtfticks "+ mtfticks)
-        print("tickets "+tickets)
+    while tickets > 0 and speccounter > 0
         index = rand(1,62)
         plr = specs[index]
-        print(plr)
         if IsPlayerConnected(plr) == 1 then
             SetPlayerType(plr,role)
             specs[index] = 0
@@ -103,19 +120,62 @@ def Spawn(tickets,role)
     return tickets
 end
 
-def breakpast()
+def breakspawn()
     SetChaosTickets(0)
     SetMTFTickets(0)
 end
+
+def spawnwaves() //Pretty miminalistic
+    if chaosticks > mtfticks then //if CI have more tickets, they deserve to spawn first
+        SpawnChaos()
+    else //if MTF have higher or equal tickets, they spawn. Its their facility, they should be more likely to arrive
+        SpawnMTF()
+    end
+end
+
 public def OnRoundStarted()
-    CreateTimer("breakpast",5000,0) //Good luck using the old spawn system without tickets
+    CreateTimer("breakspawn",5000,0) //Good luck using the old spawn system without tickets
+    SetServerSpawnTimeout(100000000000000) //If tickets does not stop u, good luck waiting that long
+    timer = CreateTimer("spawnwaves",300000,1) //Spawnwaves
+
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
-    pass //life is mean
+    local killerrole = GetPlayerType(shooter)
+    local role = playertypes[2*shootee-1]
+    if killerrole == 7 or killerrole == 3 then         //if CD team
+        for y = 0; y < 9;y++
+            if found[y] == role or role == 13 then //if died is Security plr or SCP 049-2
+                chaosticks++
+                break
+            end
+            if scp[y] == role then //if died is SCP
+                print("Good Intel")
+                chaosticks = chaosticks + 2
+                break
+            end
+        end
+        return
+    end
+    for y = 0; y < 5;y++ //to loop tho Security role list
+        if killerrole == found[y] then
+            if role == 7 or role == 13
+                print("Hostile terminated")
+                mtfticks++
+            else
+                for scp = 0; scp < 9;scp++
+                    if role == scp[y] then
+                        mtfticks = mtfticks + 3
+                        break
+                    end
+                end
+            end
+            return //break the y loop
+        end
+    end
 end
 
-public def OnPlayerEscape(__, _, escaped)
+public def OnPlayerEscape(__, escaped) //Deserves tickets for escaping. Its +2 to encourage capture by reinforcements. U get more tickets from capturing then killing
     if escaped == 7 then
         chaosticks = chaosticks + 2
     end
