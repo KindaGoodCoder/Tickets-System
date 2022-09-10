@@ -27,35 +27,57 @@ found[3] = 9
 found[4] = 4
 
 global playertypes = [127,SE_INT]
-global mtfticks = 5
-global chaosticks = 5
+global mtfticks
+global chaosticks
 
 public def OnScriptLoaded()
     for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
-        playertypes[x] = x/2 + 1 //Mathmatic genius
+        playertypes[x] = x/2 + 1 //Mathmatic genius. The linear equation (yes 100% linear) goes up by 0.5. if u put 1 for x, would be 1.5, if x = 2 than y =  2. Since we're using every second slot we're adding by 2 every time, so for all purposes, we're actually going up by one each time, while keeping the slot after x empty.
     end
 end
 
 def roles(plr, role)
-    plr = 2*plr - 1
-    playertypes[plr] = role
+    plr = 2*plr - 1 //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
+    playertypes[plr] = role 
     print(playertypes[plr])
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 5000, 0, plr, role) //make sure it runs after kill detect system
+    for plr; plr < 65; plr++
+        if IsPlayerConnected(plr) then
+            RemovePlayerText(mtftext)
+            RemovePlayerText(chaostext) //Remove text on all players screen, shouldnt cause error
+            if GetPlayerType(plr) == 0 then //if Spec
+                mtftext = CreatePlayerText(plr,"MTF Tickets: " + mtfticks, 100, 100, 255,"Courier New Rus.ttf",50)
+                chaostext = CreatePlayerText(plr,"Chaos Tickets: " + chaosticks, 100, 100, 25600, "Courier New Rus.ttf",50) //Show tickets for both teams
+            end
+        end
+    end
 end
 
-public def OnPlayerConsole(_,msg) //bunch of commands to override the old ones
-    if msg == "spawnmtf" then 
-        SpawnMTF()
-        RemoveTimer(timer)
-        timer = CreateTimer("spawnwaves",300000,1)
+public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
+    if msg == "spawnmtf" then
+        if mtfticks > 0 then 
+            SpawnMTF()
+            RemoveTimer(timer)
+            timer = CreateTimer("spawnwaves",300000,1)
+            msg = "[Ignore RCON] MTF Successfully Spawned"
+        else
+            msg = "[Tickets] Listen to RCON"
+        end
+        SendMessage(plr, msg)
     end
     if msg == "spawnchaos" then 
-        SpawnChaos()
-        RemoveTimer(timer)
-        timer = CreateTimer("spawnwaves",300000,1)
+        if chaosticks > 0 then
+            SpawnChaos()
+            RemoveTimer(timer)
+            timer = CreateTimer("spawnwaves",300000,1)
+            msg = "[Ignore RCON] Chaos Successfully Spawned"
+        else
+            msg = "[Tickets] Listen to RCON"
+        end
+        SendMessage(plr, msg)
     end
     if msg == "setmtftickets" then
         mtfticks = mtfticks + 5 
@@ -82,6 +104,7 @@ def Announc(annoucement)
         end
     end
 end
+
 public def SpawnChaos()
     chaosticks = Spawn(chaosticks,7)
     local annoucement = OnSpawnChaos() //Manually call chaos spawn event
@@ -133,11 +156,20 @@ def spawnwaves() //Pretty miminalistic
     end
 end
 
+public def OnActivateWarheads()
+    Removetimer(Timer)
+end
+
+public def OnDeactivateWarheads()
+    timer = CreateTimer("spawnwaves",300000,1)
+end
+
 public def OnRoundStarted()
+    mtfticks = 5
+    chaosticks = 5 //default values for tickets
     CreateTimer("breakspawn",5000,0) //Good luck using the old spawn system without tickets
     SetServerSpawnTimeout(100000000000000) //If tickets does not stop u, good luck waiting that long
     timer = CreateTimer("spawnwaves",300000,1) //Spawnwaves
-
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
