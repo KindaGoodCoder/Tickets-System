@@ -46,11 +46,11 @@ public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 5000, 0, plr, role) //make sure it runs after kill detect system
 end
 
-public def OnPlayerConsole() //bunch of commands to override the old ones
+public def OnPlayerConsole(_,msg) //bunch of commands to override the old ones
     if msg == "spawnmtf" then 
         SpawnMTF()
     end
-    if msg == "spawnmtf" then 
+    if msg == "spawnchaos" then 
         SpawnChaos()
     end
     if msg == "setmtftickets" then
@@ -62,15 +62,15 @@ public def OnPlayerConsole() //bunch of commands to override the old ones
 end
 
 public def SpawnMTF()
-    Spawn(mtfticks,1)
+    print("mango")
+    mtfticks = Spawn(mtfticks,1)
 end
 
 public def SpawnChaos()
-    Spawn(chaosticks,7)
+    chaosticks = Spawn(chaosticks,7)
 end
 
-def Spawn(*tickets,role)
-    print("lego")
+def Spawn(tickets,role)
     local specs = [62,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
     local speccounter = 0
     for plr = 1; plr < 65; plr++
@@ -87,9 +87,12 @@ def Spawn(*tickets,role)
         end
     end
     print(speccounter)
-    while tickets > 0 and speccounter > 0
+    while tickets > 0 and speccounter > 0;
+        print("mtfticks "+ mtfticks)
+        print("tickets "+tickets)
         index = rand(1,62)
         plr = specs[index]
+        print(plr)
         if IsPlayerConnected(plr) == 1 then
             SetPlayerType(plr,role)
             specs[index] = 0
@@ -97,6 +100,7 @@ def Spawn(*tickets,role)
             speccounter = speccounter - 1
         end
     end
+    return tickets
 end
 
 def breakpast()
@@ -104,14 +108,14 @@ def breakpast()
     SetMTFTickets(0)
 end
 public def OnRoundStarted()
-    CreateTimer("breakpast",2000,0) //Good luck using the old spawn system without tickets
+    CreateTimer("breakpast",5000,0) //Good luck using the old spawn system without tickets
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
     pass //life is mean
 end
 
-public def OnPlayerEscape(_, _, escaped)
+public def OnPlayerEscape(__, _, escaped)
     if escaped == 7 then
         chaosticks = chaosticks + 2
     end
