@@ -36,100 +36,63 @@ public def OnScriptLoaded()
     end
 end
 
-def loop(plr, role)
+def roles(plr, role)
     plr = 2*plr - 1
     playertypes[plr] = role
     print(playertypes[plr])
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
-    CreateTimer("loop", 5000, 0, plr, role) //make sure it runs after kill detect system
+    CreateTimer("roles", 5000, 0, plr, role) //make sure it runs after kill detect system
 end
 
+public def SpawnMTF()
+    print("lego")
+    local specs = [62,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
+    local speccounter = 0
+    for plr = 1; plr < 65; plr++
+        if IsPlayerConnected(plr) == 1 then
+            if GetPlayerType(plr) == 0 then
+                for space; space < 64; space++
+                    if specs[space] == 0 then
+                        specs[space] = plr
+                        speccounter++
+                        break
+                    end
+                end
+            end
+        end
+    end
+    print(speccounter)
+    while mtfticks > 0 or speccounter > 0 or giveup < 63; giveup++
+        index = rand(1,62)
+        plr = specs[index]
+        if IsPlayerConnected(plr) == 1 then
+            SetPlayerType(plr,1)
+            specs[index] = 0
+            mtfticks = mtfticks - 1
+            speccounter = speccounter - 1
+        end
+    end
+end
+
+def breakpast()
+    SetChaosTickets(0)
+    SetMTFTickets(0)
+end
 public def OnRoundStarted()
-    SetMTFTickets(mtfticks)
-    SetChaosTickets(chaosticks)
-    print(GetChaosTickets())
-    print(GetMTFTickets())
-end
-
-public def OnSpawnMTF()
-    print(mtfticks)
-    mtfticks = GetMTFTickets() - 2
-    if mtfticks < 1 then
-        SetMTFTickets(0)
-    end
-    print(GetMTFTickets())
-    print("MTF Ticks = "+mtfticks)
-end
-
-public def OnSpawnChaos()
-    print(chaosticks)
-    chaosticks = GetChaosTickets() - 2
-    if chaosticks < 1 then
-        SetChaosTickets(0)
-    end
-    print(GetChaosTickets())
-    print("Chaos Ticks = "+chaosticks)
+    CreateTimer("breakpast",2000,0) //Good luck using the old spawn system without tickets
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
-    local killerrole = GetPlayerType(shooter) //What killed
-    if killerrole == 7 or killerrole == 3 then //if cd
-        for plr = 0; plr < 130; plr = plr + 2
-            if playertypes[plr] == shootee then //Find who was killed and their previous role                
-                role = playertypes[plr+1]
-                for y = 0; y < 9; y++
-                    if role == found[y] or role == 13 then
-                        print("foundation scum")
-                        chaosticks++
-                        break
-                    end
-                    if role == scps[y] then
-                        print("Good intel")
-                        chaosticks = chaosticks + 2
-                        break
-                    end
-                end
-                SetChaosTickets(chaosticks)
-                print(GetChaosTickets())
-                return
-            end
-        end
-    end  
-    for staff; staff < 5; staff++ //if not cd, look for security player
-        if killerrole == found[staff] then
-            for plr = 0; plr < 130; plr = plr + 2
-                if playertypes[plr] == shootee then
-                    role = playertypes[plr+1]
-                    if role == 7 or role == 13 then
-                        print("Hostile terminated")
-                        mtfticks++
-                    else
-                        for y = 0; y < 9; y++
-                            if role == scps[y] then
-                                print("SCP Instance contained")
-                                mtfticks = mtfticks + 3
-                                break
-                            end
-                        end
-                    end
-                    SetMTFTickets(mtfticks+1)
-                    print(GetMTFTickets())
-                    return
-                end
-            end                            
-        end     
-    end    
+    pass //life is mean
 end
 
 public def OnPlayerEscape(plr, _, escaped)
     if escaped == 7 then
         chaosticks = chaosticks + 2
-        SetChaosTickets(chaosticks)
     end
     if escaped == 1 then
         mtfticks = mtfticks + 2
-        SetMTFTickets(mtfticks)
     end
 end
