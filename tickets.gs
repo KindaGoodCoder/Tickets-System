@@ -87,7 +87,7 @@ def Spawn(*tickets,role)
         end
     end
     print(speccounter)
-    while tickets > 0 and speccounter > 0 and giveup < 63; giveup++
+    while tickets > 0 and speccounter > 0
         index = rand(1,62)
         plr = specs[index]
         if IsPlayerConnected(plr) == 1 then
