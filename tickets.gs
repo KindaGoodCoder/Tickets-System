@@ -27,8 +27,7 @@ found[3] = 9
 found[4] = 4
 
 global playertypes = [127,SE_INT]
-global mtfticks
-global chaosticks
+global mtfticks, chaosticks, mtftext, chaostext
 
 public def OnScriptLoaded()
     for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
@@ -46,11 +45,11 @@ public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 5000, 0, plr, role) //make sure it runs after kill detect system
     for plr; plr < 65; plr++
         if IsPlayerConnected(plr) then
-            RemovePlayerText(mtftext)
-            RemovePlayerText(chaostext) //Remove text on all players screen, shouldnt cause error
+            RemovePlayerText(plr, mtftext)
+            RemovePlayerText(plr, chaostext) //Remove text on all players screen, shouldnt cause error
             if GetPlayerType(plr) == 0 then //if Spec
-                mtftext = CreatePlayerText(plr,"MTF Tickets: " + mtfticks, 100, 100, 255,"Courier New Rus.ttf",50)
-                chaostext = CreatePlayerText(plr,"Chaos Tickets: " + chaosticks, 100, 100, 25600, "Courier New Rus.ttf",50) //Show tickets for both teams
+                mtftext = CreatePlayerText(plr,"MTF Tickets: " + mtfticks, 250, 300, 255,"Courier New Rus.ttf",40)
+                chaostext = CreatePlayerText(plr,"Chaos Tickets: " + chaosticks, 250, 350, 25600, "Courier New Rus.ttf",40) //Show tickets for both teams
             end
         end
     end
@@ -165,11 +164,12 @@ public def OnDeactivateWarheads()
 end
 
 public def OnRoundStarted()
+    timer = nil
     mtfticks = 5
     chaosticks = 5 //default values for tickets
     CreateTimer("breakspawn",5000,0) //Good luck using the old spawn system without tickets
     SetServerSpawnTimeout(100000000000000) //If tickets does not stop u, good luck waiting that long
-    timer = CreateTimer("spawnwaves",300000,1) //Spawnwaves
+    global timer = CreateTimer("spawnwaves",300000,1) //Spawnwaves
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
