@@ -59,8 +59,6 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnmtf" then
         if mtfticks > 0 then 
             SpawnMTF()
-            RemoveTimer(timer)
-            timer = CreateTimer("spawnwaves",300000,1)
             msg = "[Ignore RCON] MTF Successfully Spawned"
         else
             msg = "[Tickets] Listen to RCON"
@@ -70,8 +68,6 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnchaos" then 
         if chaosticks > 0 then
             SpawnChaos()
-            RemoveTimer(timer)
-            timer = CreateTimer("spawnwaves",300000,1)
             msg = "[Ignore RCON] Chaos Successfully Spawned"
         else
             msg = "[Tickets] Listen to RCON"
@@ -142,34 +138,56 @@ def Spawn(tickets,role) //Determine spawnwave mechanic
     return tickets
 end
 
+def wipeout(plr,text)
+    if IsPlayerConnected(plr) then
+        RemovePlayerText(plr,text)
+    end
+end
+
+def spawntimer(mins,secs)
+    local sec
+    if secs < 10 then
+        sec = "0"+secs
+    else
+        sec = secs
+    end
+    local spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec
+    if secs == 0 then
+        if mins == 0 then
+            if chaosticks > mtfticks then //if CI have more tickets, they deserve to spawn first
+                SpawnChaos()
+            else //if MTF have higher or equal tickets, they spawn. Its their facility, they should be more likely to arrive
+                SpawnMTF()
+            end
+            spawntimer(5,0)
+            return
+        else
+            mins = mins - 1
+            secs = 60
+        end
+    end
+    CreateTimer("spawntimer", 1000, 0, mins, secs-1)
+    for plr = 1; plr < 65; plr++
+        if IsPlayerConnected(plr) then
+            if GetPlayerType(plr) == 0 then
+                sec = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50)
+                CreateTimer("wipeout",1000, 0, plr, sec)
+            end
+        end
+    end
+end
+
 def breakspawn()
     SetChaosTickets(0)
     SetMTFTickets(0)
 end
 
-def spawnwaves() //Pretty miminalistic
-    if chaosticks > mtfticks then //if CI have more tickets, they deserve to spawn first
-        SpawnChaos()
-    else //if MTF have higher or equal tickets, they spawn. Its their facility, they should be more likely to arrive
-        SpawnMTF()
-    end
-end
-
-public def OnActivateWarheads()
-    Removetimer(Timer)
-end
-
-public def OnDeactivateWarheads()
-    timer = CreateTimer("spawnwaves",300000,1)
-end
-
 public def OnRoundStarted()
-    timer = nil
     mtfticks = 5
     chaosticks = 5 //default values for tickets
     CreateTimer("breakspawn",5000,0) //Good luck using the old spawn system without tickets
     SetServerSpawnTimeout(100000000000000) //If tickets does not stop u, good luck waiting that long
-    global timer = CreateTimer("spawnwaves",300000,1) //Spawnwaves
+    spawntimer(5,0)
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
