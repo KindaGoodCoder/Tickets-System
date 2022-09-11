@@ -28,6 +28,7 @@ found[4] = 4
 
 global playertypes = [127,SE_INT]
 global mtfticks, chaosticks, mtftext, chaostext
+global debounce
 
 public def OnScriptLoaded()
     for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
