@@ -90,13 +90,17 @@ public def OnActivateWarheads()
     debounce = false
 end
 
+public def OnServerRestart()
+    debounce = false
+end
+
 public def OnDeactivateWarheads()
     debounce = true
     spawntimer(5,0)
 end
 
 def spawntimer(mins,secs)
-    if debounce == true then
+    if debounce == false then
         return
     end
     local sec
