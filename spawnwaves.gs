@@ -57,3 +57,20 @@ def Spawn(tickets,role) //Determine spawnwave mechanic
     end
     return tickets
 end
+
+//Got bored so decided to keep the ticket function functionality 
+public def GetMTFTickets()
+    return mtfticks
+end
+
+public def SetMTFTickets(ticks)
+    mtfticks = ticks
+end
+
+public def GetChaosTickets()
+    return chaosticks
+end
+
+public def SetChaosTickets(ticks)
+    chaosticks = ticks
+end
