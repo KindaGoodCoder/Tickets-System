@@ -63,7 +63,7 @@ public def GetMTFTickets()
     return mtfticks
 end
 
-public def SetMTFTickets(ticks)
+public def SetMTFTicket(ticks)
     mtfticks = ticks
 end
 
@@ -71,6 +71,6 @@ public def GetChaosTickets()
     return chaosticks
 end
 
-public def SetChaosTickets(ticks)
+public def SetChaosTicket(ticks)
     chaosticks = ticks
 end
