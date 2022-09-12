@@ -29,7 +29,7 @@ found[4] = 4
 
 global playertypes = [127,SE_INT]
 global mtftext, chaostext
-global debounce
+global debounce = false
 
 public def OnScriptLoaded()
     for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
@@ -44,7 +44,7 @@ def roles(plr, role)
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
-    CreateTimer("roles", 5000, 0, plr, role) //make sure it runs after kill detect system
+    CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
     for plr; plr < 65; plr++
         if IsPlayerConnected(plr) then
             RemovePlayerText(plr, mtftext)
@@ -84,20 +84,28 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     end
 end
 
-def wipeout(plr,text)
-    if IsPlayerConnected(plr) then
-        RemovePlayerText(plr,text)
-    end
+global spawnplrtext
+
+public def OnActivateWarheads()
+    debounce = false
+end
+
+public def OnDeactivateWarheads()
+    debounce = true
+    spawntimer(5,0)
 end
 
 def spawntimer(mins,secs)
+    if debounce == true then
+        return
+    end
     local sec
     if secs < 10 then
         sec = "0"+secs
     else
         sec = secs
     end
-    local spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec
+    spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec
     if secs == 0 then
         if mins == 0 then
             if chaosticks > mtfticks then //if CI have more tickets, they deserve to spawn first
@@ -112,15 +120,15 @@ def spawntimer(mins,secs)
             secs = 60
         end
     end
-    CreateTimer("spawntimer", 1000, 0, mins, secs-1)
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) then
+            RemovePlayerText(plr,spawnplrtext)
             if GetPlayerType(plr) == 0 then
-                sec = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50)
-                CreateTimer("wipeout",1000, 0, plr, sec)
+                spawnplrtext = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50)
             end
         end
-    end
+    end    
+    CreateTimer("spawntimer", 1000, 0, mins, secs-1)    
 end
 
 def breakspawn()
@@ -133,6 +141,7 @@ public def OnRoundStarted()
     chaosticks = 5 //default values for tickets
     CreateTimer("breakspawn",5000,0) //Good luck using the old spawn system without tickets
     SetServerSpawnTimeout(100000000000000) //If tickets does not stop u, good luck waiting that long
+    debounce = true
     spawntimer(5,0)
 end
 
