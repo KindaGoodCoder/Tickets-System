@@ -84,34 +84,34 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     end
 end
 
-global spawnplrtext
-
-public def OnActivateWarheads()
+public def OnActivateWarheads() //All units retreat, alpha warheads activated.
     debounce = false
 end
 
-public def OnServerRestart()
+public def OnServerRestart() //If the server for some reason doesnt activate warheads before restarting, disable spawn anyway
     debounce = false
 end
 
-public def OnDeactivateWarheads()
+public def OnDeactivateWarheads() //All units return, warheads disabled
     debounce = true
     spawntimer(5,0)
 end
 
+global spawnplrtext // Reinforcement timer textpointer
+
 def spawntimer(mins,secs)
-    if debounce == false then
+    if debounce == false then //if debounce = false, disable spawn
         return
     end
     local sec
-    if secs < 10 then
+    if secs < 10 then //declare display variable
         sec = "0"+secs
     else
         sec = secs
     end
-    spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec
+    local spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec //Reinforcement timer text
     if secs == 0 then
-        if mins == 0 then
+        if mins == 0 then //if mins and secs = 0, timer finished
             if chaosticks > mtfticks then //if CI have more tickets, they deserve to spawn first
                 SpawnChaos()
             else //if MTF have higher or equal tickets, they spawn. Its their facility, they should be more likely to arrive
@@ -119,48 +119,48 @@ def spawntimer(mins,secs)
             end
             spawntimer(5,0)
             return
-        else
+        else //if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
             mins = mins - 1
             secs = 60
         end
     end
     for plr = 1; plr < 65; plr++
-        if IsPlayerConnected(plr) then
-            RemovePlayerText(plr,spawnplrtext)
+        if IsPlayerConnected(plr) then //for each connected plr
+            RemovePlayerText(plr,spawnplrtext) //remove text, wont cause error if it doesnt exist
             if GetPlayerType(plr) == 0 then
-                spawnplrtext = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50)
+                spawnplrtext = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50) // global textpointer to disable
             end
         end
     end    
-    CreateTimer("spawntimer", 1000, 0, mins, secs-1)    
+    CreateTimer("spawntimer", 1000, 0, mins, secs-1) //restart function with secs - 1 
 end
 
-def breakspawn()
+def breakspawn() //Destroy old spawn function
     SetChaosTickets(0)
     SetMTFTickets(0)
 end
 
 public def OnRoundStarted()
-    mtfticks = 5
-    chaosticks = 5 //default values for tickets
+    mtfticks = 18
+    chaosticks = 12 //default values for tickets
     CreateTimer("breakspawn",5000,0) //Good luck using the old spawn system without tickets
     SetServerSpawnTimeout(100000000000000) //If tickets does not stop u, good luck waiting that long
     debounce = true
-    spawntimer(5,0)
+    spawntimer(5,0) //start spawn timer
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter)
-    local role = playertypes[2*shootee-1]
-    if killerrole == 7 or killerrole == 3 then         //if CD team
+    local role = playertypes[2*shootee-1] //find ded role from list
+    if killerrole == 7 or killerrole == 3 then //if CD team
         for y = 0; y < 9;y++
             if found[y] == role or role == 13 then //if died is Security plr or SCP 049-2
-                chaosticks++
+                chaosticks++ //add ci ticket
                 break
             end
             if scp[y] == role then //if died is SCP
                 print("Good Intel")
-                chaosticks = chaosticks + 2
+                chaosticks = chaosticks + 2 //good job CI
                 break
             end
         end
@@ -168,13 +168,13 @@ public def OnPlayerKillPlayer(shooter,shootee)
     end
     for y = 0; y < 5;y++ //to loop tho Security role list
         if killerrole == found[y] then
-            if role == 7 or role == 13
+            if role == 7 or role == 13 then
                 print("Hostile terminated")
-                mtfticks++
+                mtfticks++ //Traitor
             else
                 for scp = 0; scp < 9;scp++
                     if role == scp[y] then
-                        mtfticks = mtfticks + 3
+                        mtfticks = mtfticks + 3 //They can get paid now
                         break
                     end
                 end
