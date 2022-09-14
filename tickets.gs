@@ -2,7 +2,6 @@
 #include "spawnwaves.gs"
 
 global scps = [9,SE_INT]
-global cd = [2,SE_INT]
 global found = [5,SE_INT]
 //tickets
 
@@ -16,16 +15,14 @@ scps[7] = 14
 scps[0] = 15
 scps[6] = 16 
 
-//Class D Team
-cd[1] = 3
-cd[0] = 7
-
 //Security
 found[0] = 2
 found[1] = 1
 found[2] = 8
 found[3] = 9
 found[4] = 4
+
+//No need for CD team list since only 2 roles
 
 global playertypes = [127,SE_INT]
 global mtftext, chaostext
@@ -138,7 +135,7 @@ end
 def breakspawn() //Destroy old spawn function
     SetChaosTickets(0)
     SetMTFTickets(0)
-end
+end //Have to set it up as a delay since round changes it to default sometime after round start
 
 public def OnRoundStarted()
     mtfticks = 18
@@ -168,7 +165,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
     end
     for y = 0; y < 5;y++ //to loop tho Security role list
         if killerrole == found[y] then
-            if role == 7 or role == 13 then
+            if role == 7 or role == 13 then //Dont get tickets for killing innocent Class D
                 print("Hostile terminated")
                 mtfticks++ //Traitor
             else

@@ -1,13 +1,13 @@
 #include "includes\multiplayer_core.inc"
+//File to hold public functions for ticket.gs. Include this file if you wish to maintain functionality of SpawnMTF() or SpawnChaos().
 
 public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
 
 public def SpawnMTF()
     mtfticks = Spawn(mtfticks,1) //Call Spawn function and spawn then as role 1 (NTF operator)
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
-    local pain //false variable to act as a confirmation that OnSpawnMTF did not return a value
-    if annoucement == pain then //if no value, use default annoucement
-        annoucement = "SFX\Character\MTF\Announc.ogg"
+    if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
+        annoucement = "Announc.ogg"
     end
     Announc(annoucement) //annoucement
 end
@@ -23,7 +23,6 @@ end
 public def SpawnChaos()
     chaosticks = Spawn(chaosticks,7) //Call Spawn function and spawn then as role 7 (CI Soldier)
     local annoucement = OnSpawnChaos() //Manually call chaos spawn event
-    local pain //false variable to act as a confirmation that OnSpawnChaos did not return a value
     if annoucement != pain then //if spawnchaos had a value play it
         Announc(annoucement)
     end
@@ -59,18 +58,18 @@ def Spawn(tickets,role) //Determine spawnwave mechanic
 end
 
 //Got bored so decided to keep the ticket function functionality 
-public def GetMTFTickets()
+public def GetMTFTickets() //Returns how many mtf tickets r left
     return mtfticks
 end
 
-public def SetMTFTicket(ticks)
+public def SetMTFTicket(ticks) //Use SetMTFTicket() not SetMTFTickets() cause ticket.gs uses SetMTFTickets()
     mtfticks = ticks
 end
 
-public def GetChaosTickets()
+public def GetChaosTickets() //Returns how many Chaos Tickets r left
     return chaosticks
 end
 
-public def SetChaosTicket(ticks)
+public def SetChaosTicket(ticks) //Changes how many tickets chaos have. Dont use SetChaosTickets()
     chaosticks = ticks
 end
