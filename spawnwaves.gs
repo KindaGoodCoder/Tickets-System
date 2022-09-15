@@ -28,7 +28,7 @@ public def SpawnChaos()
     end
 end
 
-def Spawn(tickets,role) //Determine spawnwave mechanic
+def Spawn(tickets,role) /// spawnwave mechanic
     local specs = [62,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
     local speccounter = 0 
     for plr = 1; plr < 65; plr++
