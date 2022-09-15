@@ -54,7 +54,7 @@ public def OnPlayerGetNewRole(plr, _, role)
     end
 end
 
-def spawnbreak()
+def spawnfix()
     debounce = True
 end
     
@@ -63,7 +63,7 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
         if mtfticks > 0 then 
             debounce = False
             SpawnMTF()
-            CreateTimer("spawnbreak",1200,0)
+            CreateTimer("spawnfix",1200,0)
             msg = "[Ignore RCON] MTF Successfully Spawned"
         else
             msg = "[Tickets] Listen to RCON"
@@ -74,7 +74,7 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
         if chaosticks > 0 then
             debounce = False
             SpawnChaos()
-            CreateTimer("spawnbreak",1200,0)
+            CreateTimer("spawnfix",1200,0)
             msg = "[Ignore RCON] Chaos Successfully Spawned"
         else
             msg = "[Tickets] Listen to RCON"
