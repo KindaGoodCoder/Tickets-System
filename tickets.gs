@@ -137,7 +137,7 @@ def spawntimer(mins,secs)
     local spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec //Reinforcement timer text
     if secs == 0 then
         if mins == 0 then //if mins and secs = 0, timer finished
-            
+            spawnwave()
             return
         else //if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
             mins = mins - 1
@@ -179,7 +179,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
                 chaosticks++ //add ci ticket
                 break
             end
-            if scp[y] == role then //if died is SCP
+            if scps[y] == role then //if died is SCP
                 print("Good Intel")
                 chaosticks = chaosticks + 2 //good job CI
                 break
@@ -194,7 +194,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
                 mtfticks++ //Traitor
             else
                 for scp = 0; scp < 9;scp++
-                    if role == scp[y] then
+                    if role == scps[y] then
                         mtfticks = mtfticks + 3 //They can get paid now
                         break
                     end
