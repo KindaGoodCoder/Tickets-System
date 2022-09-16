@@ -7,7 +7,7 @@ public def SpawnMTF()
     mtfticks = Spawn(mtfticks,1) //Call Spawn function and spawn then as role 1 (NTF operator)
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
     if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
-        annoucement = "Announc.ogg"
+        annoucement = "Tickets-System/Announc.ogg"
     end
     Announc(annoucement) //annoucement
 end
