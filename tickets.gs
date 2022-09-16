@@ -119,7 +119,9 @@ public def OnDeactivateWarheads() //All units return, warheads disabled
 end
 
 def wipeout(plr,text)
-    RemovePlayerText(plr,text)
+    if IsPlayerConnected(plr) then
+        RemovePlayerText(plr,text)
+    end
 end
 
 def spawntimer(mins,secs)
