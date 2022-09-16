@@ -56,36 +56,53 @@ end
 
 def spawnfix()
     debounce = True
+    spawntimer(5,0)
 end
-    
+
+def spawnwave()
+    if chaosticks > mtfticks then //if CI have more tickets, they deserve to spawn first
+        SpawnChaos()
+    else //if MTF have higher or equal tickets, they spawn. Its their facility, they should be more likely to arrive
+        SpawnMTF()
+    end
+    spawntimer(5,0)
+end
+def spawncommand(team)
+    local msg, tickets, spawnfunction = "Spawn"
+    if team == "MTF" then
+        tickets = mtfticks        
+    else
+        tickets = chaosticks
+    end
+    spawnfunction = spawnfunction + team
+    if tickets > 0 then 
+        debounce = False
+        CreateTimer(spawnfunction,0,0) //Easier to set spawnwave as string
+        CreateTimer("spawnfix",1001,0)
+        msg = "[Ignore RCON] " + team +" Successfully Spawned"
+    else
+        msg = "[Tickets] Listen to RCON"
+    end
+    SendMessage(plr, msg)
+end
+
 public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnmtf" then
-        if mtfticks > 0 then 
-            debounce = False
-            SpawnMTF()
-            CreateTimer("spawnfix",1200,0)
-            msg = "[Ignore RCON] MTF Successfully Spawned"
-        else
-            msg = "[Tickets] Listen to RCON"
-        end
-        SendMessage(plr, msg)
+        spawncommand("MTF")
     end
     if msg == "spawnchaos" then 
-        if chaosticks > 0 then
-            debounce = False
-            SpawnChaos()
-            CreateTimer("spawnfix",1200,0)
-            msg = "[Ignore RCON] Chaos Successfully Spawned"
-        else
-            msg = "[Tickets] Listen to RCON"
-        end
-        SendMessage(plr, msg)
+        spawncommand("Chaos")
     end
     if msg == "setmtftickets" then
         mtfticks = mtfticks + 5 
     end
     if msg == "setchaostickets" then
         chaosticks = chaosticks + 5
+    end
+    if msg == "spawnwave" then
+        debounce = False
+        spawnwave()
+        CreateTimer("spawnfix",1001,0)
     end
 end
 
@@ -98,14 +115,15 @@ public def OnServerRestart() //If the server for some reason doesnt activate war
 end
 
 public def OnDeactivateWarheads() //All units return, warheads disabled
-    debounce = true
-    spawntimer(5,0)
+    spawnfix()
 end
 
-global spawnplrtext // Reinforcement timer textpointer
+def wipeout(plr,text)
+    RemovePlayerText(plr,text)
+end
 
 def spawntimer(mins,secs)
-    if debounce == false then //if debounce = false, disable spawn
+    if debounce == false then
         return
     end
     local sec
@@ -117,12 +135,7 @@ def spawntimer(mins,secs)
     local spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec //Reinforcement timer text
     if secs == 0 then
         if mins == 0 then //if mins and secs = 0, timer finished
-            if chaosticks > mtfticks then //if CI have more tickets, they deserve to spawn first
-                SpawnChaos()
-            else //if MTF have higher or equal tickets, they spawn. Its their facility, they should be more likely to arrive
-                SpawnMTF()
-            end
-            spawntimer(5,0)
+            
             return
         else //if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
             mins = mins - 1
@@ -133,10 +146,11 @@ def spawntimer(mins,secs)
         if IsPlayerConnected(plr) then //for each connected plr
             RemovePlayerText(plr,spawnplrtext) //remove text, wont cause error if it doesnt exist
             if GetPlayerType(plr) == 0 then
-                spawnplrtext = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50) // global textpointer to disable
+                sec = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50) // global textpointer to disable
+                CreateTimer("wipeout",1000,0,plr,sec)
             end
         end
-    end    
+    end
     CreateTimer("spawntimer", 1000, 0, mins, secs-1) //restart function with secs - 1 
 end
 
