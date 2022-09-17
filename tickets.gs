@@ -68,13 +68,13 @@ def spawnwave()
     spawntimer(5,0)
 end
 def spawncommand(team)
-    local msg, tickets, spawnfunction = "Spawn"
+    local msg, tickets
     if team == "MTF" then
         tickets = mtfticks        
     else
         tickets = chaosticks
     end
-    spawnfunction = spawnfunction + team
+    local spawnfunction = "Spawn" + team
     if tickets > 0 then 
         debounce = False
         CreateTimer(spawnfunction,0,0) //Easier to set spawnwave as string
