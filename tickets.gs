@@ -51,7 +51,7 @@ def roles(plr, role)
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
-    CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
+    CreateTimer("roles", 1000, 0, plr, role) //make sure it runs after kill detect system
 end
 
 def spawnfix()
