@@ -44,8 +44,8 @@ public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
     for plr; plr < 65; plr++
         if IsPlayerConnected(plr) then
-            RemovePlayerText(plr, mtftext)
             RemovePlayerText(plr, chaostext) //Remove text on all players screen, shouldnt cause error
+            RemovePlayerText(plr, mtftext)            
             if GetPlayerType(plr) == 0 then //if Spec
                 mtftext = CreatePlayerText(plr,"MTF Tickets: " + mtfticks, 250, 300, 255,"Courier New Rus.ttf",40)
                 chaostext = CreatePlayerText(plr,"Chaos Tickets: " + chaosticks, 250, 350, 25600, "Courier New Rus.ttf",40) //Show tickets for both teams
@@ -67,6 +67,7 @@ def spawnwave()
     end
     spawntimer(5,0)
 end
+
 def spawncommand(team)
     local msg, tickets
     if team == "MTF" then
@@ -78,7 +79,7 @@ def spawncommand(team)
     if tickets > 0 then 
         debounce = False
         CreateTimer(spawnfunction,0,0) //Easier to set spawnwave as string
-        CreateTimer("spawnfix",1001,0)
+        CreateTimer("spawnfix",1000,0)
         msg = "[Ignore RCON] " + team +" Successfully Spawned"
     else
         msg = "[Tickets] Listen to RCON"
@@ -102,7 +103,7 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnwave" then
         debounce = False
         spawnwave()
-        CreateTimer("spawnfix",1001,0)
+        CreateTimer("spawnfix",1000,0)
     end
 end
 
