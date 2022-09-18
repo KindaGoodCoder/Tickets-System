@@ -25,7 +25,7 @@ found[4] = 4
 //No need for CD team list since only 2 roles
 
 global playertypes = [127,SE_INT]
-global mtftext, chaostext
+global mtftext = 0, chaostext = 0
 global debounce = false
 
 public def OnScriptLoaded()
