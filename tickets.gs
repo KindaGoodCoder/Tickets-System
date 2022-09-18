@@ -25,7 +25,7 @@ found[4] = 4
 //No need for CD team list since only 2 roles
 
 global playertypes = [127,SE_INT]
-global mtftext = 0, chaostext = 0
+global mtftext, chaostext
 global debounce = false
 
 public def OnScriptLoaded()
@@ -38,20 +38,20 @@ def roles(plr, role)
     plr = 2*plr - 1 //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
     playertypes[plr] = role 
     print(playertypes[plr])
+    for player; player < 65; player++
+        if IsPlayerConnected(player) then
+            RemovePlayerText(player, chaostext) //Remove text on all players screen, shouldnt cause error
+            RemovePlayerText(player, mtftext)            
+            if GetPlayerType(player) == 0 then //if Spec
+                mtftext = CreatePlayerText(player,"MTF Tickets: " + mtfticks, 250, 300, 255,"Courier New Rus.ttf",40)
+                chaostext = CreatePlayerText(player,"Chaos Tickets: " + chaosticks, 250, 350, 25600, "Courier New Rus.ttf",40) //Show tickets for both teams
+            end
+        end
+    end
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
-    for plr; plr < 65; plr++
-        if IsPlayerConnected(plr) then
-            RemovePlayerText(plr, chaostext) //Remove text on all players screen, shouldnt cause error
-            RemovePlayerText(plr, mtftext)            
-            if GetPlayerType(plr) == 0 then //if Spec
-                mtftext = CreatePlayerText(plr,"MTF Tickets: " + mtfticks, 250, 300, 255,"Courier New Rus.ttf",40)
-                chaostext = CreatePlayerText(plr,"Chaos Tickets: " + chaosticks, 250, 350, 25600, "Courier New Rus.ttf",40) //Show tickets for both teams
-            end
-        end
-    end
 end
 
 def spawnfix()
