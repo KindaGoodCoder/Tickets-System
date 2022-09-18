@@ -143,17 +143,16 @@ def spawntimer(mins,secs)
             mins = mins - 1
             secs = 60
         end
-    end
+    end    
+    CreateTimer("spawntimer", 1000, 0, mins, secs-1) //restart function with secs - 1 
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) then //for each connected plr
-            RemovePlayerText(plr,spawnplrtext) //remove text, wont cause error if it doesnt exist
             if GetPlayerType(plr) == 0 then
                 sec = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50) // global textpointer to disable
                 CreateTimer("wipeout",1000,0,plr,sec)
             end
         end
     end
-    CreateTimer("spawntimer", 1000, 0, mins, secs-1) //restart function with secs - 1 
 end
 
 def breakspawn() //Destroy old spawn function
