@@ -42,8 +42,10 @@ end
 
 public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
-    for player; player < 65; player++
-        if IsPlayerConnected(player) then
+    for player = 1; player < 65; player++
+        print("hi")
+        if IsPlayerConnected(player) == 1 then
+            print(player)
             RemovePlayerText(player, chaostext) //Remove text on all players screen, shouldnt cause error
             RemovePlayerText(player, mtftext)            
             if GetPlayerType(player) == 0 then //if Spec
@@ -68,7 +70,7 @@ def spawnwave()
     spawntimer(5,0)
 end
 
-def spawncommand(team)
+/*def spawncommand(team)
     local msg, tickets
     if team == "MTF" then
         tickets = mtfticks        
@@ -85,7 +87,7 @@ def spawncommand(team)
         msg = "[Tickets] Listen to RCON"
     end
     SendMessage(plr, msg)
-end
+end*/
 
 public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnmtf" then
