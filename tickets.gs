@@ -96,9 +96,11 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     end
     if msg == "setmtftickets" then
         mtfticks = mtfticks + 5 
+        SetMTFTickets(0)
     end
     if msg == "setchaostickets" then
         chaosticks = chaosticks + 5
+        SetChaosTickets(0) //make sure default spawn system doesnt create tickets
     end
     if msg == "spawnwave" then
         debounce = False
@@ -125,7 +127,7 @@ def wipeout(plr,text)
     end
 end
 
-def spawntimer(mins,secs)
+def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spawns team with most tickets.
     if debounce == false then
         return
     end
