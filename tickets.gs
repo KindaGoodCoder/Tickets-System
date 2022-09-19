@@ -160,7 +160,7 @@ def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spaw
     end
 end
 
-def breakspawn() //Destroy old spawn function
+def breakspawn() //Destroy old spawn
     SetChaosTickets(0)
     SetMTFTickets(0)
 end //Have to set it up as a delay since round changes it to default sometime after round start
