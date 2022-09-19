@@ -5,16 +5,19 @@ public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
 
 public def SpawnMTF()
     mtfticks = Spawn(mtfticks,1) //Call Spawn function and spawn then as role 1 (NTF operator)
-    local pain,annoucement = OnSpawnMTF() //manually call mtf spawn event
-    if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
-        annoucement = "Tickets-System/Announc.ogg"
+    local annoucement = OnSpawnMTF() //manually call mtf spawn event
+    local pain
+    print(annoucement)
+    if annoucement == null then //if no value, use default annoucement. Pain is false variable, having nothing to its name
+        print("lego")
+        annoucement = "Tickets-System\Announc.ogg"
     end
     Announc(annoucement) //annoucement
 end
 
 def Announc(annoucement)
     for plr = 1; plr < 65; plr++ //play sound for each connected player in server
-        if IsPlayerConnected(plr) then
+        if IsPlayerConnected(plr) == 1 then
             PlaySound(plr,annoucement)
         end
     end
