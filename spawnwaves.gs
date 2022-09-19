@@ -5,7 +5,7 @@ public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
 
 public def SpawnMTF()
     mtfticks = Spawn(mtfticks,1) //Call Spawn function and spawn then as role 1 (NTF operator)
-    local annoucement = OnSpawnMTF() //manually call mtf spawn event
+    local pain,annoucement = OnSpawnMTF() //manually call mtf spawn event
     if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
         annoucement = "Tickets-System/Announc.ogg"
     end
@@ -13,7 +13,7 @@ public def SpawnMTF()
 end
 
 def Announc(annoucement)
-    for plr; plr < 65; plr++ //play sound for each connected player in server
+    for plr = 1; plr < 65; plr++ //play sound for each connected player in server
         if IsPlayerConnected(plr) then
             PlaySound(plr,annoucement)
         end
@@ -22,7 +22,7 @@ end
 
 public def SpawnChaos()
     chaosticks = Spawn(chaosticks,7) //Call Spawn function and spawn then as role 7 (CI Soldier)
-    local annoucement = OnSpawnChaos() //Manually call chaos spawn event
+    local pain,annoucement = OnSpawnChaos() //Manually call chaos spawn event
     if annoucement != pain then //if spawnchaos had a value play it
         Announc(annoucement)
     end
@@ -34,7 +34,7 @@ def Spawn(tickets,role) // spawnwave mechanic
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) == 1 then
             if GetPlayerType(plr) == 0 then //if spectator
-                for space; space < 64; space++ 
+                for space = 1; space < 64; space++ 
                     if specs[space] == 0 then //add to list
                         specs[space] = plr
                         speccounter++ //Count spectators
