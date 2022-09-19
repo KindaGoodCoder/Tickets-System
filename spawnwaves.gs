@@ -45,7 +45,7 @@ def Spawn(tickets,role) // spawnwave mechanic
         end
     end
     while tickets > 0 and speccounter > 0 //until tickets or spectators = 0, run
-        index = rand(1,62) //pick random player
+        index = rand(0,62) //pick random player
         plr = specs[index]
         if IsPlayerConnected(plr) == 1 then
             SetPlayerType(plr,role)
