@@ -68,7 +68,7 @@ def spawnwave()
     spawntimer(5,0)
 end
 
-/*def spawncommand(team)
+def spawncommand(team)
     local msg, tickets
     if team == "MTF" then
         tickets = mtfticks        
@@ -85,7 +85,7 @@ end
         msg = "[Tickets] Listen to RCON"
     end
     SendMessage(plr, msg)
-end*/
+end
 
 public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnmtf" then
