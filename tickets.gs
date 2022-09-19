@@ -1,4 +1,4 @@
-#include "Tickets-System\spawnwaves.gs"
+#include "spawnwaves.gs"
 
 global scps = [9,SE_INT]
 global found = [5,SE_INT]

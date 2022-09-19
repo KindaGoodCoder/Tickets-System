@@ -1,4 +1,4 @@
-#include "includes\multiplayer_core.inc"
+
 //File to hold public functions for ticket.gs. Include this file if you wish to maintain functionality of SpawnMTF() or SpawnChaos().
 
 public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
@@ -8,7 +8,7 @@ public def SpawnMTF()
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
     local pain
     print(annoucement)
-    if annoucement == null then //if no value, use default annoucement. Pain is false variable, having nothing to its name
+    if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
         print("lego")
         annoucement = "Tickets-System\Announc.ogg"
     end
