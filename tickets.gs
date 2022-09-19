@@ -28,8 +28,6 @@ global mtftext, chaostext
 global debounce = false
 
 public def OnScriptLoaded()
-    print("y")
-    print("x")
     for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
         playertypes[x] = x/2 + 1 //Mathmatic genius. The linear equation (yes 100% linear) goes up by 0.5. if u put 1 for x, would be 1.5, if x = 2 than y =  2. Since we're using every second slot we're adding by 2 every time, so for all purposes, we're actually going up by one each time, while keeping the slot after x empty.
     end
@@ -45,9 +43,7 @@ end
 public def OnPlayerGetNewRole(plr, _, role)
     CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
     for player = 1; player < 65; player++
-        print("hi")
         if IsPlayerConnected(player) == 1 then
-            print(player)
             RemovePlayerText(player, chaostext) //Remove text on all players screen, shouldnt cause error
             RemovePlayerText(player, mtftext)            
             if GetPlayerType(player) == 0 then //if Spec
