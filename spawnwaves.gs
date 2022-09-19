@@ -16,9 +16,10 @@ public def SpawnMTF()
 end
 
 def Announc(annoucement)
-    for plr = 1; plr < 65; plr++ //play sound for each connected player in server
+    for plr = 1; plr < 65; plr++ //play sound for each connected player in server        
         if IsPlayerConnected(plr) == 1 then
-            PlaySound(plr,annoucement)
+            print("y")
+            PlaySound(plr,"Announc.ogg")
         end
     end
 end
