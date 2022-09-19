@@ -8,9 +8,9 @@ public def SpawnMTF()
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
     local pain
     print(annoucement)
-    if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
+    if annoucement == nil then //if no value, use default annoucement. Pain is false variable, having nothing to its name
         print("lego")
-        annoucement = "Tickets-System\Announc.ogg"
+        annoucement = "Announc.ogg"
     end
     Announc(annoucement) //annoucement
 end
