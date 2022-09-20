@@ -6,11 +6,9 @@ public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
 public def SpawnMTF()
     mtfticks = Spawn(mtfticks,1) //Call Spawn function and spawn then as role 1 (NTF operator)
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
-    local pain
-    print(annoucement)
-    if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
+    if not annoucement then //if no value, use default annoucement. Pain is false variable, having nothing to its name
         print("lego")
-        annoucement = "Announc.ogg"
+        annoucement = "SFX\Character\MTF\Announc.ogg"
     end
     Announc(annoucement) //annoucement
 end
@@ -18,15 +16,15 @@ end
 def Announc(annoucement)
     for plr = 1; plr < 65; plr++ //play sound for each connected player in server        
         if IsPlayerConnected(plr) == 1 then
-            PlaySound(plr,"SFX\Character\MTF\Announc.ogg")
+            PlaySound(plr,annoucement)
         end
     end
 end
 
 public def SpawnChaos()
     chaosticks = Spawn(chaosticks,7) //Call Spawn function and spawn then as role 7 (CI Soldier)
-    local pain,annoucement = OnSpawnChaos() //Manually call chaos spawn event
-    if annoucement != pain then //if spawnchaos had a value play it
+    local annoucement = OnSpawnChaos() //Manually call chaos spawn event
+    if not annoucement then //if spawnchaos had a value play it
         Announc(annoucement)
     end
 end
