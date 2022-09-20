@@ -8,7 +8,7 @@ public def SpawnMTF()
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
     local pain
     print(annoucement)
-    if annoucement == nil then //if no value, use default annoucement. Pain is false variable, having nothing to its name
+    if annoucement == pain then //if no value, use default annoucement. Pain is false variable, having nothing to its name
         print("lego")
         annoucement = "Announc.ogg"
     end
@@ -18,8 +18,7 @@ end
 def Announc(annoucement)
     for plr = 1; plr < 65; plr++ //play sound for each connected player in server        
         if IsPlayerConnected(plr) == 1 then
-            print("y")
-            PlaySound(plr,"Announc.ogg")
+            PlaySound(plr,"SFX\Character\MTF\Announc.ogg")
         end
     end
 end
