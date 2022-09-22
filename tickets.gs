@@ -173,8 +173,7 @@ public def OnRoundStarted()
     chaosticks = 12 //default values for tickets
     CreateTimer("breakspawn",5000,0) //Good luck using the old spawn system without tickets
     SetServerSpawnTimeout(100000000000000) //If tickets does not stop u, good luck waiting that long
-    debounce = true
-    spawntimer(5,0) //start spawn timer
+    spawnfix() //start spawn timer
 end
 
 public def OnPlayerKillPlayer(shooter,shootee)
