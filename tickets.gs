@@ -145,7 +145,7 @@ def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spaw
         if mins == 0 then //if mins and secs = 0, timer finished
             spawnwave()           
             spawntimer(5,0)
-            return
+            return //timer finished
         else //if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
             mins = mins - 1
             secs = 60
@@ -155,7 +155,7 @@ def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spaw
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) then //for each connected plr
             if GetPlayerType(plr) == 0 then
-                sec = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50) // global textpointer to disable
+                sec = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50) // text to wipe
                 CreateTimer("wipeout",1000,0,plr,sec)
             end
         end
@@ -190,7 +190,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
                 break
             end
         end
-        return
+        return //end it
     end
     for y = 0; y < 5;y++ //to loop tho Security role list
         if killerrole == found[y] then

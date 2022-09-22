@@ -31,11 +31,11 @@ end
 
 def Spawn(tickets,role) // spawnwave mechanic
     local specs = [62,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
-    local speccounter = 0 
+    local speccounter = 0 //count the ded
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) == 1 then
             if GetPlayerType(plr) == 0 then //if spectator
-                for space = 1; space < 64; space++ 
+                for space = 0; space < 64; space++ 
                     if specs[space] == 0 then //add to list
                         specs[space] = plr
                         speccounter++ //Count spectators
