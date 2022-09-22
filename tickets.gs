@@ -34,15 +34,14 @@ public def OnScriptLoaded()
 end
 
 def roles(plr, role)
-    if plr != 0 then
-        plr = 2*plr - 1 //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
-        playertypes[plr] = role 
+    if plr != 0 then //plr can equal 0 when player connevt
+        playertypes[2*plr - 1] = role //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
         print(playertypes[plr])
     end
 end
 
 public def OnPlayerConnect()
-    OnPlayerGetNewRole(0)
+    OnPlayerGetNewRole(0) //too lazy to make a new function so imma use the callback myself
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
@@ -59,7 +58,7 @@ public def OnPlayerGetNewRole(plr, _, role)
     end
 end
 
-def spawnfix()
+def spawnfix() //convience
     debounce = True
     spawntimer(5,0)
 end
@@ -70,7 +69,6 @@ def spawnwave()
     else //if MTF have higher or equal tickets, they spawn. Its their facility, they should be more likely to arrive
         SpawnMTF()
     end
-    spawntimer(5,0)
 end
 
 def spawncommand(team)
@@ -145,7 +143,8 @@ def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spaw
     local spawntext = "Next Reinforcement Spawn wave in " + mins + ":" + sec //Reinforcement timer text
     if secs == 0 then
         if mins == 0 then //if mins and secs = 0, timer finished
-            spawnwave()
+            spawnwave()           
+            spawntimer(5,0)
             return
         else //if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
             mins = mins - 1
