@@ -8,7 +8,7 @@ public def SpawnMTF()
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
     if not annoucement then //if no value, use default annoucement
         print("lego")
-        annoucement = "Tickets-System\Announc.ogg"
+        annoucement = "SFX\Character\MTF\Announc.ogg"
     end
     Announc(annoucement) //annoucement
 end
