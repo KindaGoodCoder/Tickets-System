@@ -63,7 +63,7 @@ def spawnwave()
     end
 end
 
-def spawncommand(team)
+def spawncommand(plr,team)
     local msg, tickets
     if team == "MTF" then
         tickets = mtfticks        
@@ -84,7 +84,7 @@ end
 
 public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnmtf" then
-        spawncommand("MTF")
+        spawncommand(plr,"MTF")
     end
     if msg == "spawnchaos" then 
         spawncommand("Chaos")
@@ -100,6 +100,12 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
     if msg == "spawnwave" then
         debounce = False
         spawnwave()
+        if mtfticks+chaosticks == 0 Then
+            msg = "[RCON] Neither team has tickets"
+        else
+            msg = "[Ignore RCON] Team Successfully Spawned"
+        end
+        SendMessage(plr, msg)
         CreateTimer("spawnfix",1000,0)
     end
 end
