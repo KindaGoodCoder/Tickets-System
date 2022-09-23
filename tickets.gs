@@ -23,19 +23,13 @@ found[4] = 4
 
 //No need for CD team list since only 2 roles
 
-global playertypes = [127,SE_INT]
+global playertypes = [65,SE_INT]
 global mtftext, chaostext
 global debounce = false
 
-public def OnScriptLoaded()
-    for x = 0; x < 128; x = x + 2 //For every second slot in the list, add possible player number, should support 64 players
-        playertypes[x] = x/2 + 1 //Mathmatic genius. The linear equation (yes 100% linear) goes up by 0.5. if u put 1 for x, would be 1.5, if x = 2 than y =  2. Since we're using every second slot we're adding by 2 every time, so for all purposes, we're actually going up by one each time, while keeping the slot after x empty.
-    end
-end
-
 def roles(plr, role)
     if plr != 0 then //plr can equal 0 when player connevt
-        playertypes[2*plr - 1] = role //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
+        playertypes[plr] = role //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
         print(playertypes[plr])
     end
 end
@@ -177,7 +171,7 @@ end
 
 public def OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetPlayerType(shooter)
-    local role = playertypes[2*shootee-1] //find ded role from list
+    local role = playertypes[shootee] //find ded role from list
     if killerrole == 7 or killerrole == 3 then //if CD team
         for y = 0; y < 9;y++
             if found[y] == role or role == 13 then //if died is Security plr or SCP 049-2

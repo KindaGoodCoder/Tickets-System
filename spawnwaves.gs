@@ -1,4 +1,3 @@
-
 //File to hold public functions for ticket.gs. Include this file if you wish to maintain functionality of SpawnMTF() or SpawnChaos().
 
 public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
@@ -30,27 +29,22 @@ public def SpawnChaos()
 end
 
 def Spawn(tickets,role) // spawnwave mechanic
-    local specs = [62,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
+    local specs = [64,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
     local speccounter = 0 //count the ded
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) == 1 then
             if GetPlayerType(plr) == 0 then //if spectator
-                for space = 0; space < 64; space++ 
-                    if specs[space] == 0 then //add to list
-                        specs[space] = plr
-                        speccounter++ //Count spectators
-                        break
-                    end
-                end
+                specs[plr] = true
+                speccounter++
             end
         end
     end
     while tickets > 0 and speccounter > 0 //until tickets or spectators = 0, run
-        index = rand(0,62) //pick random player
-        plr = specs[index]
-        if IsPlayerConnected(plr) == 1 then
+        plr = rand(0,65) //pick random player
+        index = specs[plr]
+        if IsPlayerConnected(plr) == 1 and index == true then
             SetPlayerType(plr,role)
-            specs[index] = 0
+            specs[plr] = false
             tickets = tickets - 1
             speccounter = speccounter - 1
         end
