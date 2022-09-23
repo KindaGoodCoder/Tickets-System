@@ -29,7 +29,7 @@ public def SpawnChaos()
 end
 
 def Spawn(tickets,role) // spawnwave mechanic
-    local specs = [64,SE_INT] //Minus 2 plrs from max players as u need atleast 2 players for a round not to end
+    local specs = [65,SE_INT]
     local speccounter = 0 //count the ded
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) == 1 then

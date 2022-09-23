@@ -28,14 +28,12 @@ global mtftext, chaostext
 global debounce = false
 
 def roles(plr, role)
-    if plr != 0 then //plr can equal 0 when player connevt
-        playertypes[plr] = role //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
-        print(playertypes[plr])
-    end
+    playertypes[plr] = role //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
+    print(playertypes[plr])
 end
 
-public def OnPlayerConnect()
-    OnPlayerGetNewRole(0) //too lazy to make a new function so imma use the callback myself
+public def OnPlayerConnect(plr)
+    OnPlayerGetNewRole(plr,0) //too lazy to make a new function so imma use the callback myself
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
