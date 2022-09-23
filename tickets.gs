@@ -28,7 +28,7 @@ global mtftext, chaostext
 global debounce = false
 
 def roles(plr, role)
-    playertypes[plr] = role //We do a little maths. We want to reverse the equation from line 35 to give us the slot the playerid is given (fixed), then we want to add 1 to that to find the role value. So y = x/2 + 1 reversed = 2(y-1) = 2y - 2 = x. We want to add one to this equation for the next slot so 2y-2+1 = 2y-1. Therefore 2*plr - 1 equals the slot we require. Thank you for attending my TED Talk
+    playertypes[plr] = role
     print(playertypes[plr])
 end
 
