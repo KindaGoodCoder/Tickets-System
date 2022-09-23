@@ -33,7 +33,7 @@ def roles(plr, role)
 end
 
 public def OnPlayerConnect(plr)
-    OnPlayerGetNewRole(plr,0) //too lazy to make a new function so imma use the callback myself
+    OnPlayerGetNewRole(plr,_,0) //too lazy to make a new function so imma use the callback myself
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
