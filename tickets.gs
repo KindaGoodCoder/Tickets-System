@@ -89,20 +89,6 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
             spawncommand("Chaos")
         case "setmtftickets"
             mtfticks = mtfticks + 5 
-        mtfticks = mtfticks + 5 
-            mtfticks = mtfticks + 5 
-        mtfticks = mtfticks + 5 
-            mtfticks = mtfticks + 5 
-        mtfticks = mtfticks + 5 
-            mtfticks = mtfticks + 5 
-        mtfticks = mtfticks + 5 
-            mtfticks = mtfticks + 5 
-        mtfticks = mtfticks + 5 
-            mtfticks = mtfticks + 5 
-        mtfticks = mtfticks + 5 
-            mtfticks = mtfticks + 5 
-        mtfticks = mtfticks + 5 
-            mtfticks = mtfticks + 5 
             SetMTFTickets(0)
         case "setchaostickets"
             chaosticks = chaosticks + 5
