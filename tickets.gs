@@ -5,14 +5,14 @@ global found = [5,SE_INT]
 //tickets
 
 //SCPs (Excluding 049-2 cause its "special")
-scps[1] = 5
-scps[2] = 6
-scps[3] = 10
-scps[4] = 11
-scps[5] = 12
-scps[7] = 14
-scps[0] = 15
-scps[6] = 16 
+scps[0] = 5
+scps[1] = 6
+scps[2] = 10
+scps[3] = 11
+scps[4] = 12
+scps[5] = 16 
+scps[6] = 14
+scps[7] = 15
 
 //Security
 found[0] = 2
@@ -51,8 +51,7 @@ public def OnPlayerGetNewRole(plr, _, role)
 end
 
 def spawnfix() //convience
-    debounce = True
-    spawntimer(5,0)
+    debounce = True; spawntimer(5,0)
 end
 
 def spawnwave()
@@ -63,7 +62,7 @@ def spawnwave()
     end
 end
 
-def spawncommand(plr,team)
+def spawncommand(team)
     local msg, tickets
     if team == "MTF" then
         tickets = mtfticks        
@@ -73,7 +72,7 @@ def spawncommand(plr,team)
     local spawnfunction = "Spawn" + team
     if tickets > 0 then 
         debounce = False
-        CreateTimer(spawnfunction,0,0) //Easier to set spawnwave as string
+        CreateTimer("Spawn" + team,0,0) //Easier to set spawnwave as string
         CreateTimer("spawnfix",1000,0)
         msg = "[Ignore RCON] " + team +" Successfully Spawned"
     else
@@ -83,23 +82,34 @@ def spawncommand(plr,team)
 end
 
 public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
-    if msg == "spawnmtf" then
-        spawncommand(plr,"MTF")
-    end
-    if msg == "spawnchaos" then 
-        spawncommand("Chaos")
-    end
-    if msg == "setmtftickets" then
+    select msg
+        case "spawnmtf"
+            spawncommand("MTF")
+        case "spawnchaos" 
+            spawncommand("Chaos")
+        case "setmtftickets"
+            mtfticks = mtfticks + 5 
         mtfticks = mtfticks + 5 
-        SetMTFTickets(0)
-    end
-    if msg == "setchaostickets" then
-        chaosticks = chaosticks + 5
-        SetChaosTickets(0) //make sure default spawn system doesnt create tickets
-    end
-    if msg == "spawnwave" then
-        debounce = False
-        spawnwave()
+            mtfticks = mtfticks + 5 
+        mtfticks = mtfticks + 5 
+            mtfticks = mtfticks + 5 
+        mtfticks = mtfticks + 5 
+            mtfticks = mtfticks + 5 
+        mtfticks = mtfticks + 5 
+            mtfticks = mtfticks + 5 
+        mtfticks = mtfticks + 5 
+            mtfticks = mtfticks + 5 
+        mtfticks = mtfticks + 5 
+            mtfticks = mtfticks + 5 
+        mtfticks = mtfticks + 5 
+            mtfticks = mtfticks + 5 
+            SetMTFTickets(0)
+        case "setchaostickets"
+            chaosticks = chaosticks + 5
+            SetChaosTickets(0) //make sure default spawn system doesnt create tickets
+        case "spawnwave"
+            debounce = False
+            spawnwave()
         if mtfticks+chaosticks == 0 Then
             msg = "[RCON] Neither team has tickets"
         else
@@ -145,8 +155,7 @@ def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spaw
             spawntimer(5,0)
             return //timer finished
         else //if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
-            mins = mins - 1
-            secs = 60
+            mins = mins - 1; secs = 60
         end
     end    
     CreateTimer("spawntimer", 1000, 0, mins, secs-1) //restart function with secs - 1 
@@ -161,8 +170,7 @@ def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spaw
 end
 
 def breakspawn() //Destroy old spawn
-    SetChaosTickets(0)
-    SetMTFTickets(0)
+    SetChaosTickets(0); SetMTFTickets(0)
 end //Have to set it up as a delay since round changes it to default sometime after round start
 
 public def OnRoundStarted()
@@ -178,14 +186,12 @@ public def OnPlayerKillPlayer(shooter,shootee)
     local role = playertypes[shootee] //find ded role from list
     if killerrole == 7 or killerrole == 3 then //if CD team
         for y = 0; y < 9;y++
-            if found[y] == role or role == 13 then //if died is Security plr or SCP 049-2
-                chaosticks++ //add ci ticket
-                break
-            end
-            if scps[y] == role then //if died is SCP
-                print("Good Intel")
-                chaosticks = chaosticks + 2 //good job CI
-                break
+            select role
+                case found[y], 13 //if died is Security plr or SCP 049-2
+                    chaosticks++; break //add ci ticket
+                case scps[y] //if died is SCP
+                    print("Good Intel")
+                    chaosticks = chaosticks + 2; break //good job CI
             end
         end
         return //end it
@@ -198,8 +204,7 @@ public def OnPlayerKillPlayer(shooter,shootee)
             else
                 for scp = 0; scp < 9;scp++
                     if role == scps[y] then
-                        mtfticks = mtfticks + 3 //They can get paid now
-                        break
+                        mtfticks = mtfticks + 3; break //They can get paid now
                     end
                 end
             end
