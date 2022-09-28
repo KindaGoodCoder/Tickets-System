@@ -64,8 +64,8 @@ end
 
 def spawncommand(team)
     local msg, tickets
-    if team == "MTF" then
-        tickets = mtfticks        
+    if team == "MTF" then 
+        tickets = mtfticks
     else
         tickets = chaosticks
     end
@@ -94,14 +94,11 @@ public def OnPlayerConsole(plr,msg) //bunch of commands to override the old ones
             SetChaosTickets(0) //make sure default spawn system doesnt create tickets
         case "spawnwave"
             debounce = False
-            spawnwave()
-        if mtfticks+chaosticks == 0 Then
-            msg = "[RCON] Neither team has tickets"
-        else
-            msg = "[Ignore RCON] Team Successfully Spawned"
-        end
-        SendMessage(plr, msg)
-        CreateTimer("spawnfix",1000,0)
+            if chaosticks > mtfticks then
+                spawncommand("Chaos")
+            else
+                spawncommand("MTF")
+            end
     end
 end
 
@@ -118,15 +115,11 @@ public def OnDeactivateWarheads() //All units return, warheads disabled
 end
 
 def wipeout(plr,text)
-    if IsPlayerConnected(plr) then
-        RemovePlayerText(plr,text)
-    end
+    if IsPlayerConnected(plr) then RemovePlayerText(plr,text)
 end
 
 def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spawns team with most tickets.
-    if debounce == false then
-        return
-    end
+    if debounce == false then return
     local sec
     if secs < 10 then //declare display variable
         sec = "0"+secs
