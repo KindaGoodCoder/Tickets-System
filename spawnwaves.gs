@@ -5,27 +5,20 @@ public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
 public def SpawnMTF()
     mtfticks = Spawn(mtfticks,1) //Call Spawn function and spawn then as role 1 (NTF operator)
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
-    if not annoucement then //if no value, use default annoucement
-        print("lego")
-        annoucement = "SFX\Character\MTF\Announc.ogg"
-    end
+    if not annoucement then annoucement = "SFX\Character\MTF\Announc.ogg"//if no value, use default annoucement
     Announc(annoucement) //annoucement
 end
 
 def Announc(annoucement)
     for plr = 1; plr < 65; plr++ //play sound for each connected player in server        
-        if IsPlayerConnected(plr) == 1 then
-            PlaySound(plr,annoucement)
-        end
+        if IsPlayerConnected(plr) == 1 then PlaySound(plr,annoucement)
     end
 end
 
 public def SpawnChaos()
     chaosticks = Spawn(chaosticks,7) //Call Spawn function and spawn then as role 7 (CI Soldier)
     local annoucement = OnSpawnChaos() //Manually call chaos spawn event
-    if annoucement then //if spawnchaos had a value play it
-        Announc(annoucement)
-    end
+    if annoucement then Announc(annoucement)//if spawnchaos had a value play it        
 end
 
 def Spawn(tickets,role) // spawnwave mechanic
@@ -34,8 +27,7 @@ def Spawn(tickets,role) // spawnwave mechanic
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) == 1 then
             if GetPlayerType(plr) == 0 then //if spectator
-                specs[plr] = true
-                speccounter++
+                specs[plr] = true; speccounter++
             end
         end
     end

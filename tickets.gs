@@ -33,7 +33,7 @@ def roles(plr, role)
 end
 
 public def OnPlayerConnect(plr)
-    OnPlayerGetNewRole(plr,_,0) //too lazy to make a new function so imma use the callback myself
+    OnPlayerGetNewRole(plr,0,0) //too lazy to make a new function so imma use the callback myself
 end
 
 public def OnPlayerGetNewRole(plr, _, role)
@@ -69,7 +69,6 @@ def spawncommand(team)
     else
         tickets = chaosticks
     end
-    local spawnfunction = "Spawn" + team
     if tickets > 0 then 
         debounce = False
         CreateTimer("Spawn" + team,0,0) //Easier to set spawnwave as string
@@ -200,10 +199,8 @@ public def OnPlayerKillPlayer(shooter,shootee)
 end
 
 public def OnPlayerEscape(__, escaped) //Deserves tickets for escaping. Its +2 to encourage capture by reinforcements. U get more tickets from capturing then killing
-    if escaped == 7 then
-        chaosticks = chaosticks + 2
-    end
-    if escaped == 1 then
-        mtfticks = mtfticks + 2
+    select escaped
+        case 7; chaosticks = chaosticks + 2
+        case 1; mtfticks = mtfticks + 2
     end
 end
