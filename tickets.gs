@@ -118,15 +118,11 @@ public def OnDeactivateWarheads() //All units return, warheads disabled
 end
 
 def wipeout(plr,text)
-    if IsPlayerConnected(plr) then
-        RemovePlayerText(plr,text)
-    end
+    if IsPlayerConnected(plr) then RemovePlayerText(plr,text)
 end
 
 def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spawns team with most tickets.
-    if debounce == false then
-        return
-    end
+    if debounce == false then return
     local sec
     if secs < 10 then //declare display variable
         sec = "0"+secs
