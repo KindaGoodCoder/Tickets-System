@@ -43,8 +43,10 @@ public def OnPlayerGetNewRole(plr, _, role)
             RemovePlayerText(player, chaostext) //Remove text on all players screen, shouldnt cause error
             RemovePlayerText(player, mtftext)            
             if GetPlayerType(player) == 0 then //if Spec
-                mtftext = CreatePlayerText(player,"MTF Tickets: " + mtfticks, 250, 300, 255,"Courier New Rus.ttf",40)
-                chaostext = CreatePlayerText(player,"Chaos Tickets: " + chaosticks, 250, 350, 25600, "Courier New Rus.ttf",40) //Show tickets for both teams
+                local screen_width = GetPlayerMonitorWidth(player)
+                local screen_height = GetPlayerMonitorHeight(player)
+                mtftext = CreatePlayerText(player,"MTF Tickets: " + mtfticks, screen_width/2.56, screen_height/1.6, 255,"Courier New Rus.ttf",40)
+                chaostext = CreatePlayerText(player,"Chaos Tickets: " + chaosticks, screen_width/2.56, screen_height/1.3, 25600, "Courier New Rus.ttf",40) //Show tickets for both teams
             end
         end
     end
@@ -143,7 +145,9 @@ def spawntimer(mins,secs) //looks familiar. Creates a timer which at end of spaw
     for plr = 1; plr < 65; plr++
         if IsPlayerConnected(plr) then //for each connected plr
             if GetPlayerType(plr) == 0 then
-                sec = CreatePlayerText(plr, spawntext, 15, 60,  123456, "DS-DIGITAL.ttf",50) // text to wipe
+                local screen_width = GetPlayerMonitorWidth(plr)
+                local screen_height = GetPlayerMonitorHeight(plr)
+                sec = CreatePlayerText(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) // text to wipe
                 CreateTimer("wipeout",1000,0,plr,sec)
             end
         end
