@@ -30,15 +30,7 @@ global debounce = false
 def roles(plr, role)
     playertypes[plr] = role
     print(playertypes[plr])
-end
-
-public def OnPlayerConnect(plr)
-    OnPlayerGetNewRole(plr,0,0) //too lazy to make a new function so imma use the callback myself
-end
-
-public def OnPlayerGetNewRole(plr, _, role)
-    CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
-    for player = 1; player < 65; player++
+    for player = 1; player < 65; player++ //Tickets display... works better on a delay
         if IsPlayerConnected(player) == 1 then
             RemovePlayerText(player, chaostext) //Remove text on all players screen, shouldnt cause error
             RemovePlayerText(player, mtftext)            
@@ -50,6 +42,14 @@ public def OnPlayerGetNewRole(plr, _, role)
             end
         end
     end
+end
+
+public def OnPlayerConnect(plr)
+    OnPlayerGetNewRole(plr,0,0) //too lazy to make a new function so imma use the callback myself
+end
+
+public def OnPlayerGetNewRole(plr, _, role)
+    CreateTimer("roles", 2000, 0, plr, role) //make sure it runs after kill detect system
 end
 
 def spawnfix() //convience
