@@ -4,6 +4,7 @@ public mtfticks,chaosticks //tickets for each team. Used by tickets.gs
 
 public def SpawnMTF()
     mtfticks = Spawn(mtfticks,1) //Call Spawn function and spawn then as role 1 (NTF operator)
+    ServerMessage("Epsilon-11 has entered the facility")
     local annoucement = OnSpawnMTF() //manually call mtf spawn event
     if not annoucement then annoucement = "SFX\Character\MTF\Announc.ogg"//if no value, use default annoucement
     Announc(annoucement) //annoucement
@@ -17,6 +18,7 @@ end
 
 public def SpawnChaos()
     chaosticks = Spawn(chaosticks,7) //Call Spawn function and spawn then as role 7 (CI Soldier)
+    ServerMessage("Chaos Soldiers have breached the facility")
     local annoucement = OnSpawnChaos() //Manually call chaos spawn event
     if annoucement then Announc(annoucement)//if spawnchaos had a value play it        
 end
