@@ -29,7 +29,6 @@ global debounce = false
 
 def roles(plr, role)
     playertypes[plr] = role
-    print(playertypes[plr])
     for player = 1; player < 65; player++ //Tickets display... works better on a delay
         if IsPlayerConnected(player) == 1 then
             RemovePlayerText(player, chaostext) //Remove text on all players screen, shouldnt cause error
