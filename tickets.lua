@@ -11,8 +11,6 @@ function OnScriptLoaded() --Server tool will load script regardless of error. If
     print("Tickets")
     ScriptLoaded()
     return -1
-
-    function OnPlayerConnect() print("lego") end
 end
 
 function plr_loop(Run_Fuction) for plr = 1, 64 do if isplayerconnected(plr) == 1 then Run_Fuction(plr) end end end 

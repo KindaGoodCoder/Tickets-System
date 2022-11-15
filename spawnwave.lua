@@ -2,7 +2,7 @@ function ScriptLoaded() --Server tool will load script regardless of error. If T
     print("SpawnWaves")
 end
 
-mtfticks,chaosticks = 0
+-- mtfticks,chaosticks = 0
 
 function spawnmtf()
     mtfticks = Spawn(mtfticks,1) -- Call Spawn function and spawn then as role 1 (NTF operator)
