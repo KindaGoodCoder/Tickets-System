@@ -40,7 +40,7 @@ function OnPlayerGetNewRole(plr,_,role)
     createtimer("roles",2000,0)
 end
 
--- function OnPlayerConnect() OnPlayerGetNewRole() end
+function OnPlayerConnect() OnPlayerGetNewRole() end
 
 function OnPlayerKillPlayer(shooter,shootee)
     local killerrole = getplayertype(shooter)
@@ -76,4 +76,60 @@ function OnPlayerKillPlayer(shooter,shootee)
     return -1
 end
 
-function OnPlayerEscape(_,escaped) if escaped == 7 then chaosticks = chaosticks + 2 elseif escaped == 1 then mtfticks = mtfticks + 2 end end
+function OnPlayerEscape(_,escaped) 
+    if escaped == 7 then chaosticks = chaosticks + 2
+    elseif escaped == 1 then mtfticks = mtfticks + 2 end
+end
+
+function spawntimer(mins,secs) --looks familiar. Creates a timer which at end of spawns team with most tickets.
+    mins,secs = tonumber(mins),tonumber(secs)
+    local sec
+
+    if secs < 10 then sec = "0"..secs--declare display variable
+    else sec = secs end
+
+    local spawntext = string.format("Next Reinforcement Spawn wave in %d:%s",mins,sec) --Reinforcement timer text
+
+    if secs == 0 then
+        if mins == 0 then --if mins and secs = 0, timer finished
+            spawnwave()
+            spawntimer(5,0)
+            return -1 --timer finished
+        else --if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
+            mins = mins - 1
+            secs = 60
+        end
+    end
+
+    recursive = function() spawntimer(mins,secs-1); return -1 end
+    createtimer("recursive", 1000, 0) --restart function with secs - 1
+
+    wipeout = function(plr,txt) 
+        plr,txt = tonumber(plr),tonumber(txt)
+        if isplayerconnected(plr) == 1 then removeplayertext(plr,txt) end
+        return -1
+    end
+
+    plr_loop(function(plr)
+        if getplayertype(plr) == 0 then
+            local screen_width = getplayermonitorwidth(plr)
+            local screen_height = getplayermonitorheight(plr)
+            sec = createplayertext(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) -- text to wipe
+            createtimer("wipeout",1000,0,plr,sec)
+        end
+    end)
+
+end
+
+function spawnwave()
+    if chaosticks > mtfticks then spawnchaos() else spawnmtf() end
+end
+
+function OnRoundStarted()
+    breakspawn = function() setmtftickets(0); setchaostickets(0); return -1 end
+    mtfticks = 24
+    chaosticks = 18 --default values for tickets
+    createtimer("breakspawn",5000,0) --Good luck using the old spawn system without tickets
+    setserverspawntimeout(100000000000000) --If tickets does not stop u, good luck waiting that long
+    spawnfix() --start spawn timer
+end
