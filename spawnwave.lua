@@ -1,12 +1,34 @@
 function ScriptLoaded() --Server tool will load script regardless of error. If Tickets does not print on ServerLoaded, spawnwave.gs is bugged
+    Spawn(mtfticks,1)
     print("SpawnWaves")
 end
 
 -- mtfticks,chaosticks = 0
 
 
-function Spawn()
-    --
+function Spawn(tickets,role)
+    local specs = {}
+    local speccounter = 0 --count the ded
+
+    plr_loop(function(plr)
+        if getplayertype(plr) == 0 then --if spectator
+            specs[plr] = true
+            speccounter = speccounter + 1
+        end
+    end)
+
+    while tickets > 0 and speccounter > 0 --until tickets or spectators = 0, run
+        plr = rand(0,65) --pick random player
+        index = specs[plr]
+        if isplayerconnected(plr) == 1 and index == true then
+            setplayertype(plr,role)
+            specs[plr] = false
+            tickets = tickets - 1
+            speccounter = speccounter - 1
+        end
+    end
+
+    return tickets
 end
 
 function Annouc()

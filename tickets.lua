@@ -16,31 +16,34 @@ end
 function plr_loop(Run_Fuction) for plr = 1, 64 do if isplayerconnected(plr) == 1 then Run_Fuction(plr) end end end 
 --Input a function which will run for every connected player
 
-function OnPlayerGetNewRole(plr,_,role)
-    roles = function()
+function OnPlayerGetNewRole(player,_,role)
+    if type(player) == "number" then
+        roles = function()
 
-        playertypes[plr] = role
+            playertypes[player] = role
 
-        plr_loop(function(plr)
-            if isplayerconnected(plr) == 1 then
-                removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
-                removeplayertext(plr, mtftext)
+            plr_loop(function(plr)
+                if isplayerconnected(plr) == 1 then
+                    removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
+                    removeplayertext(plr, mtftext)
 
-                if getplayertype(plr) == 0 then --if Spec
-                    role = getplayermonitorwidth(plr) -- Use that variable
-                    local screen_height = getplayermonitorheight(plr)
-                    mtftext = createplayertext(plr,"MTF Tickets: " + mtfticks, screen_width/2.56, screen_height/1.6, 255,"Courier New Rus.ttf",40)
-                    chaostext = createplayertext(plr,"Chaos Tickets: " + chaosticks, screen_width/2.56, screen_height/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
+                    if getplayertype(plr) == 0 then --if Spec
+                        role = getplayermonitorwidth(plr) -- Use that variable
+                        local screen_height = getplayermonitorheight(plr)
+                        mtftext = createplayertext(plr,"MTF Tickets: " + mtfticks, screen_width/2.56, screen_height/1.6, 255,"Courier New Rus.ttf",40)
+                        chaostext = createplayertext(plr,"Chaos Tickets: " + chaosticks, screen_width/2.56, screen_height/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
+                    end
                 end
-            end
-            
-        end) --Tickets display... works better on a delay
-    end
+                
+            end) --Tickets display... works better on a delay
+        end
 
-    createtimer("roles",2000,0)
+        createtimer("roles",2000,0)
+    end
+    return -1
 end
 
-function OnPlayerConnect() OnPlayerGetNewRole() end
+function OnPlayerConnect() OnPlayerGetNewRole(); return -1 end
 
 function OnPlayerKillPlayer(shooter,shootee)
     local killerrole = getplayertype(shooter)
@@ -82,47 +85,56 @@ function OnPlayerEscape(_,escaped)
 end
 
 function spawntimer(mins,secs) --looks familiar. Creates a timer which at end of spawns team with most tickets.
-    mins,secs = tonumber(mins),tonumber(secs)
-    local sec
+    if debounce then
+        mins,secs = tonumber(mins),tonumber(secs)
+        local sec
 
-    if secs < 10 then sec = "0"..secs--declare display variable
-    else sec = secs end
+        if secs < 10 then sec = "0"..secs--declare display variable
+        else sec = secs end
 
-    local spawntext = string.format("Next Reinforcement Spawn wave in %d:%s",mins,sec) --Reinforcement timer text
+        local spawntext = string.format("Next Reinforcement Spawn wave in %d:%s",mins,sec) --Reinforcement timer text
 
-    if secs == 0 then
-        if mins == 0 then --if mins and secs = 0, timer finished
-            spawnwave()
-            spawntimer(5,0)
-            return -1 --timer finished
-        else --if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
-            mins = mins - 1
-            secs = 60
+        if secs == 0 then
+            if mins == 0 then --if mins and secs = 0, timer finished
+                spawnwave()
+                spawntimer(5,0)
+                return -1 --timer finished
+            else --if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
+                mins = mins - 1
+                secs = 60
+            end
         end
+
+        recursive = function() spawntimer(mins,secs-1); return -1 end
+        createtimer("recursive", 1000, 0) --restart function with secs - 1
+
+        wipeout = function(plr,txt) 
+            plr,txt = tonumber(plr),tonumber(txt)
+            if isplayerconnected(plr) == 1 then removeplayertext(plr,txt) end
+            return -1
+        end
+
+        plr_loop(function(plr)
+            if getplayertype(plr) == 0 then
+                local screen_width = getplayermonitorwidth(plr)
+                local screen_height = getplayermonitorheight(plr)
+                sec = createplayertext(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) -- text to wipe
+                createtimer("wipeout",1000,0,plr,sec)
+            end
+        end)
+
     end
 
-    recursive = function() spawntimer(mins,secs-1); return -1 end
-    createtimer("recursive", 1000, 0) --restart function with secs - 1
-
-    wipeout = function(plr,txt) 
-        plr,txt = tonumber(plr),tonumber(txt)
-        if isplayerconnected(plr) == 1 then removeplayertext(plr,txt) end
-        return -1
-    end
-
-    plr_loop(function(plr)
-        if getplayertype(plr) == 0 then
-            local screen_width = getplayermonitorwidth(plr)
-            local screen_height = getplayermonitorheight(plr)
-            sec = createplayertext(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) -- text to wipe
-            createtimer("wipeout",1000,0,plr,sec)
-        end
-    end)
-
+    return -1
 end
 
 function spawnwave()
     if chaosticks > mtfticks then spawnchaos() else spawnmtf() end
+end
+
+function spawnfix()
+    debounce = true
+    spawntimer(5,0)
 end
 
 function OnRoundStarted()
