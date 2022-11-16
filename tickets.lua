@@ -7,6 +7,8 @@ found = {1,2,4,8,9,0,0,0,0}
 
 mtftext, chaostext = 0
 
+debounce = false
+
 function OnScriptLoaded() --Server tool will load script regardless of error. If Tickets does not print on ServerLoaded, tickets.gs is bugged
     print("Tickets")
     ScriptLoaded()
@@ -136,6 +138,12 @@ function spawnfix()
     debounce = true
     spawntimer(5,0)
 end
+
+function OnActivateWarheads() debounce = false end --All units retreat, alpha warheads activated.    
+
+function OnServerRestart() debounce = false end --If the server for some reason doesnt activate warheads before restarting, disable spawn anyway
+
+function OnDeactivateWarheads() spawnfix() end --All units return, warheads disabled    
 
 function OnRoundStarted()
     breakspawn = function() setmtftickets(0); setchaostickets(0); return -1 end
