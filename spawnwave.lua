@@ -35,7 +35,7 @@ function Spawn(tickets,role)
     return tickets
 end
 
-function Announc(annoucement) plr_loop(function(plr) playsound(plr,annoucement) end) end
+function Announc(annoucement) plr_loop(function(plr) playsound(plr,annoucement) end); return -1 end
 
 function spawnmtfs()
     print("l")
