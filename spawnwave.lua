@@ -1,25 +1,26 @@
 function ScriptLoaded() --Server tool will load script regardless of error. If Tickets does not print on ServerLoaded, spawnwave.gs is bugged
-    Spawn(mtfticks,1)
     print("SpawnWaves")
 end
 
--- mtfticks,chaosticks = 0
+mtfticks,chaosticks = 0,0
 
 
 function Spawn(tickets,role)
     local specs = {}
     local speccounter = 0 --count the ded
+    print("y")
 
     plr_loop(function(plr)
         if getplayertype(plr) == 0 then --if spectator
             specs[plr] = true
             speccounter = speccounter + 1
         end
-        if speccounter > 9 then speccounter = 9; break end -- Max 9 operators. End loop
-    end)    
+    end)
 
-    while tickets > 0 and speccounter > 0 --until tickets or spectators = 0, run
-        plr = rand(0,65) --pick random player
+    if speccounter > 9 then speccounter = 9 end -- Max 9 operators. End loop
+
+    while (tickets > 0 and speccounter > 0) do --until tickets or spectators = 0, run
+        plr = math.random(65) --pick random player
         index = specs[plr]
         if isplayerconnected(plr) == 1 and index == true then
             setplayertype(plr,role)
@@ -29,25 +30,30 @@ function Spawn(tickets,role)
         end
     end
 
+    print("but")
     breakspawn() --I dont even know
     return tickets
 end
 
-function Annouc(annoucement) plr_loop(function(plr) PlaySound(plr,annoucement) end) end
+function Announc(annoucement) plr_loop(function(plr) playsound(plr,annoucement) end) end
 
-function spawnmtf()
+function spawnmtfs()
+    print("l")
     mtfticks = Spawn(mtfticks,1) -- Call Spawn function and spawn then as role 1 (NTF operator)
     servermessage("Epsilon-11 has entered the facility")
     local announcement
-    if type(OnSpawnMTF) == "function" then announcement = OnSpawnMTF() 
+    if type(OnSpawnMTF) == "function" then announcement = OnSpawnMTF()
     else annoucement = [[SFX\Character\MTF\Announc.ogg]] end-- manually call mtf spawn event
-    Announc(announcement) --announcement
+    Announc(announcement) --announcement    
+    print(annoucement)
+    return -1
 end
 
 function spawnchaos()
     chaosticks = Spawn(mtfticks,1)
     servermessage("Chaos Insurgency Strike Team detected")
     if type(OnSpawnChaos) == "function" then Announc(OnSpawnChaos()) end
+    return -1
 end
 
 ----------------Boredom at its finest---------------

@@ -22,7 +22,7 @@ function OnPlayerGetNewRole(player,_,role)
     if type(player) == "number" then
         roles = function()
 
-            playertypes[player] = role
+            playertypes[player] = role --Add their role to the list under the playerid
 
             plr_loop(function(plr)
                 if isplayerconnected(plr) == 1 then
@@ -30,28 +30,32 @@ function OnPlayerGetNewRole(player,_,role)
                     removeplayertext(plr, mtftext)
 
                     if getplayertype(plr) == 0 then --if Spec
-                        role = getplayermonitorwidth(plr) -- Use that variable
-                        local screen_height = getplayermonitorheight(plr)
-                        mtftext = createplayertext(plr,"MTF Tickets: " + mtfticks, screen_width/2.56, screen_height/1.6, 255,"Courier New Rus.ttf",40)
-                        chaostext = createplayertext(plr,"Chaos Tickets: " + chaosticks, screen_width/2.56, screen_height/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
+                        role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
+                        player = getplayermonitorheight(plr)
+                        mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
+                        chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
                     end
                 end
                 
             end) --Tickets display... works better on a delay
+
+            return -1
         end
 
-        createtimer("roles",2000,0)
+        createtimer("roles",4000,0)
     end
+
     return -1
 end
 
 function OnPlayerConnect() OnPlayerGetNewRole(); return -1 end
 
 function OnPlayerKillPlayer(shooter,shootee)
+    print("death")
     local killerrole = getplayertype(shooter)
     local role = playertypes[shootee] --find shootee role from list
     if killerrole == 7 or killerrole == 3 then --if CD team
-
+        print("pain")
         for y = 1, 9 do
             if role == found[y] or role == 13 then chaosticks = chaosticks + 1; break -- If died is Security plr or SCP 049-2
             elseif role == scps[y] then chaosticks = chaosticks + 2; break end --if died is SCP
@@ -84,11 +88,12 @@ end
 function OnPlayerEscape(_,escaped) 
     if escaped == 7 then chaosticks = chaosticks + 2
     elseif escaped == 1 then mtfticks = mtfticks + 2 end
+    return -1
 end
 
 function spawntimer(mins,secs) --looks familiar. Creates a timer which at end of spawns team with most tickets.
     if debounce then
-        mins,secs = tonumber(mins),tonumber(secs)
+        mins,secs = tonumber(mins),tonumber(secs)        
         local sec
 
         if secs < 10 then sec = "0"..secs--declare display variable
@@ -137,13 +142,15 @@ end
 function spawnfix()
     debounce = true
     spawntimer(5,0)
+    print("Die")
+    return -1
 end
 
-function OnActivateWarheads() debounce = false end --All units retreat, alpha warheads activated.    
+function OnActivateWarheads() debounce = false; return -1 end --All units retreat, alpha warheads activated.    
 
-function OnServerRestart() debounce = false end --If the server for some reason doesnt activate warheads before restarting, disable spawn anyway
+function OnServerRestart() debounce = false; return -1 end --If the server for some reason doesnt activate warheads before restarting, disable spawn anyway
 
-function OnDeactivateWarheads() spawnfix() end --All units return, warheads disabled    
+function OnDeactivateWarheads() spawnfix(); return -1 end --All units return, warheads disabled    
 
 function OnRoundStarted()
     breakspawn = function() setmtftickets(0); setchaostickets(0); return -1 end
@@ -152,4 +159,41 @@ function OnRoundStarted()
     createtimer("breakspawn",5000,0) --Good luck using the old spawn system without tickets
     setserverspawntimeout(100000000000000) --If tickets does not stop u, good luck waiting that long
     spawnfix() --start spawn timer
+    return -1
+end
+
+--------Commands------------
+function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
+    function spawncommand(team)
+        local txt, tickets
+        print("spawn"..team)
+
+        if team == "mtf" then tickets = mtfticks
+        else tickets = chaosticks end
+
+        if tickets > 0 then
+            debounce = false
+            createtimer("spawn"..team.."s",0,0) --Easier to set spawnwave as string
+            createtimer("spawnfix",2000,0)
+            print("k")
+            txt = string.format("[Ignore RCON] %s Successfully Spawned",team)
+        else txt = "[Tickets] Listen to RCON" end
+
+        sendmessage(plr, txt)
+    end
+
+    local select = {
+        ["spawnmtf"] = function() spawncommand("mtf") end,
+        ["spawnchaos"] = function() spawncommand("chaos") end,
+        ["setmtftickets"] = function() mtfticks = mtfticks + 5 end,
+        ["setchaostickets"] = function() chaosticks = chaosticks + 5 end,
+        ["spawnwave"] = function()
+            debounce = false
+            if chaosticks > mtfticks then spawncommand("Chaos")
+            else spawncommand("MTF") end
+        end
+    }
+    if type(select[string.lower(msg)]) == "function" then select[string.lower(msg)]() end
+
+    return -1
 end
