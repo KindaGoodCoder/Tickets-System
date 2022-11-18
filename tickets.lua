@@ -20,9 +20,9 @@ function plr_loop(Run_Fuction) for plr = 1, 64 do if isplayerconnected(plr) == 1
 
 function OnPlayerGetNewRole(player,_,role)
     if type(player) == "number" then
-        roles = function()
+        playertypes[player] = role --Add their role to the list under the playerid
 
-            playertypes[player] = role --Add their role to the list under the playerid
+        roles = function()            
 
             plr_loop(function(plr)
                 if isplayerconnected(plr) == 1 then
@@ -42,7 +42,7 @@ function OnPlayerGetNewRole(player,_,role)
             return -1
         end
 
-        createtimer("roles",4000,0)
+        createtimer("roles",2000,0)
     end
 
     return -1
@@ -51,15 +51,17 @@ end
 function OnPlayerConnect() OnPlayerGetNewRole(); return -1 end
 
 function OnPlayerKillPlayer(shooter,shootee)
-    print("death")
+    print(shootee) 
     local killerrole = getplayertype(shooter)
     local role = playertypes[shootee] --find shootee role from list
+    print("death")
+    print(role)
     if killerrole == 7 or killerrole == 3 then --if CD team
         print("pain")
         for y = 1, 9 do
-            if role == found[y] or role == 13 then chaosticks = chaosticks + 1; break -- If died is Security plr or SCP 049-2
+            if role == found[y] or role == 13 then chaosticks = chaosticks + 1; print("home"); break -- If died is Security plr or SCP 049-2
             elseif role == scps[y] then chaosticks = chaosticks + 2; break end --if died is SCP
-        end        
+        end
 
     else
 
@@ -142,7 +144,6 @@ end
 function spawnfix()
     debounce = true
     spawntimer(5,0)
-    print("Die")
     return -1
 end
 
@@ -164,18 +165,17 @@ end
 
 --------Commands------------
 function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
+
     function spawncommand(team)
         local txt, tickets
-        print("spawn"..team)
 
         if team == "mtf" then tickets = mtfticks
         else tickets = chaosticks end
 
         if tickets > 0 then
             debounce = false
-            createtimer("spawn"..team.."s",0,0) --Easier to set spawnwave as string
+            createtimer("spawn"..team,0,0) --Easier to set spawnwave as string
             createtimer("spawnfix",2000,0)
-            print("k")
             txt = string.format("[Ignore RCON] %s Successfully Spawned",team)
         else txt = "[Tickets] Listen to RCON" end
 
