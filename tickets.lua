@@ -15,7 +15,13 @@ function OnScriptLoaded() --Server tool will load script regardless of error. If
     return -1
 end
 
-function plr_loop(Run_Fuction) for plr = 1, 64 do if isplayerconnected(plr) == 1 then Run_Fuction(plr) end end end 
+function plr_loop(Run_Function)
+    for plr = 1, 64 do 
+        if isplayerconnected(plr) == 1 then
+            if not pcall(function() Run_Function(plr) end) then break end
+        end
+    end
+end
 --Input a function which will run for every connected player
 
 function OnPlayerGetNewRole(player,_,role)
@@ -25,6 +31,7 @@ function OnPlayerGetNewRole(player,_,role)
         roles = function()            
 
             plr_loop(function(plr)
+
                 if isplayerconnected(plr) == 1 then
                     removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
                     removeplayertext(plr, mtftext)
@@ -36,7 +43,7 @@ function OnPlayerGetNewRole(player,_,role)
                         chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
                     end
                 end
-                
+
             end) --Tickets display... works better on a delay
 
             return -1

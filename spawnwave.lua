@@ -14,9 +14,11 @@ function Spawn(tickets,role)
             specs[plr] = true
             speccounter = speccounter + 1
         end
+
+        if speccounter > 9 then speccounter = 9; error("s") end -- Max 9 operators. End loop
     end)
 
-    if speccounter > 9 then speccounter = 9 end -- Max 9 operators. End loop
+    
 
     while (tickets > 0 and speccounter > 0) do --until tickets or spectators = 0, run
         plr = math.random(65) --pick random player
@@ -39,7 +41,7 @@ function spawnmtf()
     mtfticks = Spawn(mtfticks,1) -- Call Spawn function and spawn then as role 1 (NTF operator)
     servermessage("Epsilon-11 has entered the facility")
     local announcement
-    if type(OnSpawnMTF) == "function" then announcement = OnSpawnMTF(); print("i")
+    if type(OnSpawnMTF) == "function" then announcement = OnSpawnMTF()
     else announcement = "SFX/Character/MTF/Announc.ogg" end-- manually call mtf spawn event
     announc(announcement) --announcement    
     print(announcement)
@@ -49,7 +51,7 @@ end
 function spawnchaos()
     chaosticks = Spawn(chaosticks,7)
     servermessage("Chaos Insurgency Strike Team detected")
-    if type(OnSpawnChaos) == "function" then Announc(OnSpawnChaos()) end
+    if type(OnSpawnChaos) == "function" then announc(OnSpawnChaos()) end
     return -1
 end
 
