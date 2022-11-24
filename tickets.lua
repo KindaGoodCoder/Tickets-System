@@ -16,7 +16,7 @@ function OnScriptLoaded() --Server tool will load script regardless of error. If
 end
 
 function plr_loop(Run_Function)
-    for plr = 1, 64 do 
+    for plr = 1, 64 do
         if isplayerconnected(plr) == 1 then
             if not pcall(function() Run_Function(plr) end) then break end
         end
@@ -28,30 +28,22 @@ function OnPlayerGetNewRole(player,_,role)
     if type(player) == "number" then
         playertypes[player] = role --Add their role to the list under the playerid
 
-        roles = function()            
+        plr_loop(function(plr)
+            if isplayerconnected(plr) == 1 then
+                
+                removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
+                removeplayertext(plr, mtftext)
 
-            plr_loop(function(plr)
-
-                if isplayerconnected(plr) == 1 then
-                    removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
-                    removeplayertext(plr, mtftext)
-
-                    if getplayertype(plr) == 0 then --if Spec
-                        role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
-                        player = getplayermonitorheight(plr)
-                        mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
-                        chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
-                    end
+                if getplayertype(plr) == 0 then --if Spec
+                    role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
+                    player = getplayermonitorheight(plr)
+                    mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
+                    chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
                 end
+            end
+        end) --Tickets display... works better on a delay
 
-            end) --Tickets display... works better on a delay
-
-            return -1
-        end
-
-        createtimer("roles",2000,0)
     end
-
     return -1
 end
 
@@ -102,10 +94,10 @@ end
 
 function spawntimer(mins,secs) --looks familiar. Creates a timer which at end of spawns team with most tickets.
     if debounce then
-        mins,secs = tonumber(mins),tonumber(secs)        
+        mins,secs = tonumber(mins),tonumber(secs)
         local sec
 
-        if secs < 10 then sec = "0"..secs--declare display variable
+        if secs < 10 then sec = "0"..secs --declare display variable
         else sec = secs end
 
         local spawntext = string.format("Next Reinforcement Spawn wave in %d:%s",mins,sec) --Reinforcement timer text
@@ -161,16 +153,22 @@ function OnServerRestart() debounce = false; return -1 end --If the server for s
 function OnDeactivateWarheads() spawnfix(); return -1 end --All units return, warheads disabled    
 
 function OnRoundStarted()
-    breakspawn = function() setmtftickets(0); setchaostickets(0); return -1 end
+    breakspawn = function()
+        setmtftickets(0)
+        setchaostickets(0)
+        setserverspawntimeout(100000000000000) -- If tickets does not stop u, good luck waiting that long
+        return -1
+    end
+
     mtfticks = 24
-    chaosticks = 18 --default values for tickets
-    createtimer("breakspawn",5000,0) --Good luck using the old spawn system without tickets
-    setserverspawntimeout(100000000000000) --If tickets does not stop u, good luck waiting that long
-    spawnfix() --start spawn timer
+    chaosticks = 18 -- Default values for tickets
+    createtimer("breakspawn",5000,0) -- Good luck using the old spawn system without tickets
+    
+    spawnfix() -- Start spawn timer
     return -1
 end
 
---------Commands------------
+----------Commands------------
 function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
 
     function spawncommand(team)
@@ -200,7 +198,8 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
             else spawncommand("MTF") end
         end
     }
-    if type(select[string.lower(msg)]) == "function" then select[string.lower(msg)]() end
+    msg = string.lower(msg:gsub("%s+","")) -- Strip and lower command
+    if type(select[msg]) == "function" then select[msg]() end
 
     return -1
 end
