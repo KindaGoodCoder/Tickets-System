@@ -194,8 +194,8 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
         ["setchaostickets"] = function() chaosticks = chaosticks + 5 end,
         ["spawnwave"] = function()
             debounce = false
-            if chaosticks > mtfticks then spawncommand("Chaos")
-            else spawncommand("MTF") end
+            if chaosticks > mtfticks then spawncommand("chaos")
+            else spawncommand("mtf") end
         end
     }
     msg = string.lower(msg:gsub("%s+","")) -- Strip and lower command
