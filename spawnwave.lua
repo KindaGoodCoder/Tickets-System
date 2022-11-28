@@ -21,9 +21,9 @@ function Spawn(tickets,role)
     
 
     while (tickets > 0 and speccounter > 0) do --until tickets or spectators = 0, run
-        plr = math.random(65) --pick random player
+        plr = math.random(64) --pick random player
         index = specs[plr]
-        if isplayerconnected(plr) == 1 and index == true then
+        if isplayerconnected(plr) == 1 and index then
             setplayertype(plr,role)
             specs[plr] = false
             tickets = tickets - 1
@@ -32,7 +32,7 @@ function Spawn(tickets,role)
     end
 
     breakspawn() --I dont even know
-    return tickets
+    return tickets -- Return how many tickets are left
 end
 
 function announc(annoucement) plr_loop(function(plr) playsound(plr,annoucement) end); return -1 end
@@ -41,10 +41,9 @@ function spawnmtf()
     mtfticks = Spawn(mtfticks,1) -- Call Spawn function and spawn then as role 1 (NTF operator)
     servermessage("Epsilon-11 has entered the facility")
     local announcement
-    if type(OnSpawnMTF) == "function" then announcement = OnSpawnMTF()
-    else announcement = "SFX/Character/MTF/Announc.ogg" end-- manually call mtf spawn event
-    announc(announcement) --announcement    
-    print(announcement)
+    if type(OnSpawnMTF) == "function" then announcement = OnSpawnMTF() -- Lua doesn't like empty functions. U call a function with no definition it errors. but type() is protected.
+    else announcement = "SFX/Character/MTF/Announc.ogg" end -- manually call mtf spawn event. If OnSpawnMTF isn't defined by another file, use default sound
+    announc(announcement) --announcement
     return -1
 end
 
@@ -58,8 +57,8 @@ end
 ----------------Boredom at its finest---------------
 function getmtftickets() return mtfticks end--Returns how many mtf tickets r left
 
-function setmtfticket(ticks) mtfticks = ticks end--Use SetMTFTicket() not SetMTFTickets() cause ticket.gs uses SetMTFTickets()    
+function setmtfticket(ticks) mtfticks = ticks end--Use SetMTFTicket() not SetMTFTickets() cause ticket.lua uses SetMTFTickets()
 
-function getchaostickets() return chaosticks end--Returns how many Chaos Tickets r left    
+function getchaostickets() return chaosticks end--Returns how many Chaos Tickets r left
 
-function setchaosticket(ticks) chaosticks = ticks end --Changes how many tickets chaos have. Dont use SetChaosTickets()    
+function setchaosticket(ticks) chaosticks = ticks end --Changes how many tickets chaos have. Dont use SetChaosTickets()

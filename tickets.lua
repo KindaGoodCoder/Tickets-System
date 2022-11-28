@@ -41,7 +41,7 @@ function OnPlayerGetNewRole(player,_,role)
                     chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
                 end
             end
-        end) --Tickets display... works better on a delay
+        end)
 
     end
     return -1
@@ -53,13 +53,15 @@ function OnPlayerKillPlayer(shooter,shootee)
     print(shootee) 
     local killerrole = getplayertype(shooter)
     local role = playertypes[shootee] --find shootee role from list
-    print("death")
-    print(role)
     if killerrole == 7 or killerrole == 3 then --if CD team
-        print("pain")
         for y = 1, 9 do
-            if role == found[y] or role == 13 then chaosticks = chaosticks + 1; print("home"); break -- If died is Security plr or SCP 049-2
-            elseif role == scps[y] then chaosticks = chaosticks + 2; break end --if died is SCP
+            if role == found[y] or role == 13 then
+                chaosticks = chaosticks + 1
+                break -- If died is Security plr or SCP 049-2
+            elseif role == scps[y] then
+                chaosticks = chaosticks + 2
+                break
+            end --if died is SCP
         end
 
     else
@@ -82,7 +84,9 @@ function OnPlayerKillPlayer(shooter,shootee)
 
             end
         end
+        
     end
+
     return -1
 end
 
@@ -150,7 +154,7 @@ function OnActivateWarheads() debounce = false; return -1 end --All units retrea
 
 function OnServerRestart() debounce = false; return -1 end --If the server for some reason doesnt activate warheads before restarting, disable spawn anyway
 
-function OnDeactivateWarheads() spawnfix(); return -1 end --All units return, warheads disabled    
+function OnDeactivateWarheads() spawnfix(); return -1 end --All units return, warheads disabled
 
 function OnRoundStarted()
     breakspawn = function()
@@ -180,7 +184,7 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
         if tickets > 0 then
             debounce = false
             createtimer("spawn"..team,0,0) --Easier to set spawnwave as string
-            createtimer("spawnfix",2000,0)
+            createtimer("spawnfix",2000,0) -- Fix spawntimer
             txt = string.format("[Ignore RCON] %s Successfully Spawned",team)
         else txt = "[Tickets] Listen to RCON" end
 
@@ -188,18 +192,39 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
     end
 
     local select = {
-        ["spawnmtf"] = function() spawncommand("mtf") end,
-        ["spawnchaos"] = function() spawncommand("chaos") end,
-        ["setmtftickets"] = function() mtfticks = mtfticks + 5 end,
-        ["setchaostickets"] = function() chaosticks = chaosticks + 5 end,
-        ["spawnwave"] = function()
-            debounce = false
+        ["spawnmtf"] = function() spawncommand("mtf") end, -- Spawn MTF Wave
+        ["spawnchaos"] = function() spawncommand("chaos") end, -- Spawn Chaos Wave
+        ["spawnwave"] = function() -- Spawn Team with most tickets (MTF will spawn if tickets are equal)
+            debounce = false -- Disable spawntimer
             if chaosticks > mtfticks then spawncommand("chaos")
             else spawncommand("mtf") end
         end
     }
     msg = string.lower(msg:gsub("%s+","")) -- Strip and lower command
     if type(select[msg]) == "function" then select[msg]() end
+    
+    local settickets = function(txt)
+        msg = string.gsub(msg, "%D",'') --For some reason, using tonumber() here adds one to the number given. %D targets all non-number (or decimal) characters. %d would target numbers
+        if type(tonumber(msg)) ~= "nil" then return tonumber(msg)
+        else
+            sendmessage(plr, "Error, Parameter Invalid. "..txt)
+            return 15
+        end
+        -- .gsub() basically deletes all non-number characters in this case. Technically if u write 1setmtftickets 10, you just set mtfticks to 110
+    end
 
+    if string.find(msg, "setchaostickets") then mtfticks = settickets("MTF Tickets set to 15")
+    elseif string.find(msg, "setmtftickets") then chaosticks = settickets("Chaos Tickets set to 15") end
+    elseif string.find(msg, "spawntimer") then
+        debounce = false        
+        newspawnfix = function()
+            debounce = true
+            spawntimer(settickets("Spawn timer set to 15 minutes"),0)
+            return -1
+        end
+
+        createtimer("newspawnfix",2000,0)
+    end
+    
     return -1
 end
