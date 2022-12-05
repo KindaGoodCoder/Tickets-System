@@ -15,15 +15,6 @@ function OnScriptLoaded() --Server tool will load script regardless of error. If
     return -1
 end
 
-function plr_loop(Run_Function)
-    for plr = 1, 64 do
-        if isplayerconnected(plr) == 1 then
-            if not pcall(function() Run_Function(plr) end) then break end
-        end
-    end
-end
---Input a function which will run for every connected player
-
 function OnPlayerGetNewRole(player,_,role)
     if type(player) == "number" then
         playertypes[player] = role --Add their role to the list under the playerid
@@ -73,7 +64,7 @@ function OnPlayerKillPlayer(shooter,shootee)
                 if role == 7 or role == 13 then mtfticks = mtfticks + 1 --Dont get tickets for killing innocent Class D
                 else 
                     for scp = 0, 9 do 
-                        if role == scps[y] then 
+                        if role == scps[scp] then 
                             mtfticks = mtfticks + 3
                             break 
                         end 

@@ -4,6 +4,14 @@ end
 
 mtfticks,chaosticks = 0,0
 
+function plr_loop(Run_Function)
+    for plr = 1, 64 do
+        if isplayerconnected(plr) == 1 then
+            if not pcall(function() Run_Function(plr) end) then break end
+        end
+    end
+end
+--Input a function which will run for every connected player
 
 function Spawn(tickets,role)
     local specs = {}
