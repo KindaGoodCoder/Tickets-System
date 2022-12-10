@@ -23,7 +23,7 @@ function Spawn(tickets,role)
             speccounter = speccounter + 1
         end
 
-        if speccounter > 9 then speccounter = 9; error("s") end -- Max 9 operators. End loop
+        if speccounter > 9 then speccounter = 9; error("Reached Max Spawnwave Size. Ending Spawnwave. Ignore Error") end -- Max 9 operators. End loop
     end)
 
     

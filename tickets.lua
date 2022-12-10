@@ -16,32 +16,26 @@ function OnScriptLoaded() --Server tool will load script regardless of error. If
 end
 
 function OnPlayerGetNewRole(player,_,role)
-    if type(player) == "number" then
-        playertypes[player] = role --Add their role to the list under the playerid
+    playertypes[player] = role--Add their role to the list under the playerid
 
-        plr_loop(function(plr)
-            if isplayerconnected(plr) == 1 then
-                
-                removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
-                removeplayertext(plr, mtftext)
+    plr_loop(function(plr)            
+        removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
+        removeplayertext(plr, mtftext)
 
-                if getplayertype(plr) == 0 then --if Spec
-                    role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
-                    player = getplayermonitorheight(plr)
-                    mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
-                    chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
-                end
-            end
-        end)
+        if getplayertype(plr) == 0 then --if Spec
+            role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
+            player = getplayermonitorheight(plr)
+            mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
+            chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
+        end
+    end)
 
-    end
     return -1
 end
 
-function OnPlayerConnect() OnPlayerGetNewRole(); return -1 end
+function OnPlayerConnect(plr) OnPlayerGetNewRole(plr,_,0); return -1 end
 
 function OnPlayerKillPlayer(shooter,shootee)
-    print(shootee) 
     local killerrole = getplayertype(shooter)
     local role = playertypes[shootee] --find shootee role from list
     if killerrole == 7 or killerrole == 3 then --if CD team
@@ -64,7 +58,7 @@ function OnPlayerKillPlayer(shooter,shootee)
                 if role == 7 or role == 13 then mtfticks = mtfticks + 1 --Dont get tickets for killing innocent Class D
                 else 
                     for scp = 0, 9 do 
-                        if role == scps[scp] then 
+                        if role == scps[scp] then
                             mtfticks = mtfticks + 3
                             break 
                         end 
@@ -196,21 +190,23 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
     
     local settickets = function(txt)
         msg = string.gsub(msg, "%D",'') --For some reason, using tonumber() here adds one to the number given. %D targets all non-number (or decimal) characters. %d would target numbers
-        if type(tonumber(msg)) ~= "nil" then return tonumber(msg)
+        if type(tonumber(msg)) ~= "nil" then
+            sendmessage(plr,"[Tickets-System] "..string.format(txt,tonumber(msg)))
+            return tonumber(msg)
         else
-            sendmessage(plr, "Error, Parameter Invalid. "..txt)
+            sendmessage(plr, "Error, Parameter Invalid. "..string.format(txt,15))
             return 15
         end
         -- .gsub() basically deletes all non-number characters in this case. Technically if u write 1setmtftickets 10, you just set mtfticks to 110
     end
 
-    if string.find(msg, "setmtftickets") then mtfticks = settickets("MTF Tickets set to 15")
-    elseif string.find(msg, "setchaostickets") then chaosticks = settickets("Chaos Tickets set to 15")
+    if string.find(msg, "setmtftickets") then mtfticks = settickets("MTF Tickets set to %d")
+    elseif string.find(msg, "setchaostickets") then chaosticks = settickets("Chaos Tickets set to %d")
     elseif string.find(msg, "spawntimer") then
         debounce = false        
         newspawnfix = function()
             debounce = true
-            spawntimer(settickets("Spawn timer set to 15 minutes"),0)
+            spawntimer(settickets("Spawn timer set to %d minutes"),0)
             return -1
         end
 
