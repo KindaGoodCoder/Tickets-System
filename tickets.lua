@@ -191,10 +191,10 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
     local settickets = function(txt)
         msg = string.gsub(msg, "%D",'') --For some reason, using tonumber() here adds one to the number given. %D targets all non-number (or decimal) characters. %d would target numbers
         if type(tonumber(msg)) ~= "nil" then
-            sendmessage(plr,"[Tickets-System] "..string.format(txt,tonumber(msg)))
+            servermessage("[REINFORCEMENTS] "..string.format(txt,tonumber(msg)))
             return tonumber(msg)
         else
-            sendmessage(plr, "Error, Parameter Invalid. "..string.format(txt,15))
+            sendmessage(plr, "[Tickets-System] Error, Parameter Invalid. "..string.format(txt,15))
             return 15
         end
         -- .gsub() basically deletes all non-number characters in this case. Technically if u write 1setmtftickets 10, you just set mtfticks to 110
