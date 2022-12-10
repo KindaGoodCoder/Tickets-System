@@ -204,8 +204,8 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
         -- .gsub() basically deletes all non-number characters in this case. Technically if u write 1setmtftickets 10, you just set mtfticks to 110
     end
 
-    if string.find(msg, "setchaostickets") then mtfticks = settickets("MTF Tickets set to 15")
-    elseif string.find(msg, "setmtftickets") then chaosticks = settickets("Chaos Tickets set to 15")
+    if string.find(msg, "setmtftickets") then mtfticks = settickets("MTF Tickets set to 15")
+    elseif string.find(msg, "setchaostickets") then chaosticks = settickets("Chaos Tickets set to 15")
     elseif string.find(msg, "spawntimer") then
         debounce = false        
         newspawnfix = function()
