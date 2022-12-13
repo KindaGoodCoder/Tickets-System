@@ -4,7 +4,7 @@ playertypes = {} -- List to hold all player roles. Playerid will be used as inde
 mtftext, chaostext = 0
 debounce = false
 
-function OnScriptLoaded() --Server tool will load script regardless of error. If Tickets does not print on ServerLoaded, tickets.gs is bugged
+function OnScriptLoaded() --Server tool will load script regardless of error. If Tickets does not print on ServerLoaded, tickets.lua is bugged
     print("Tickets")
     ScriptLoaded()
     return -1
@@ -21,8 +21,9 @@ function GetTeam(role)
             [found[y]] = "found",
             [cd[y]] = "chaos"
         }
-        return select[role]
+        if type(select[role]) == "string" then return select[role] end
     end
+    return false --Catchall
 end
 
 function OnPlayerGetNewRole(player,_,role)
@@ -178,8 +179,9 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
     local settickets = function(txt)
         msg = string.gsub(msg, "%D",'') --For some reason, using tonumber() here adds one to the number given. %D targets all non-number (or decimal) characters. %d would target numbers
         if type(tonumber(msg)) ~= "nil" then
-            servermessage("[REINFORCEMENTS] "..string.format(txt,tonumber(msg)))
-            return tonumber(msg)
+            msg = tonumber(msg)
+            servermessage("[REINFORCEMENTS] "..string.format(txt,msg))
+            return msg
         else
             sendmessage(plr, "[Tickets-System] Error, Parameter Invalid. "..string.format(txt,15))
             return 15

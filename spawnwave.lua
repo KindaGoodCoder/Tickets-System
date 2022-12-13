@@ -1,4 +1,4 @@
-function ScriptLoaded() --Server tool will load script regardless of error. If Tickets does not print on ServerLoaded, spawnwave.lua is bugged
+function ScriptLoaded() --Server tool will load script regardless of error. If Spawnwaves does not print on ServerLoaded, spawnwave.lua is bugged
     print("SpawnWaves")
 end
 
@@ -12,10 +12,10 @@ function Spawn(tickets,role)
     local specs = {}
 
     plr_loop(function(plr)
-        if getplayertype(plr) == 0 then
-            speccounter = speccounter + 1
-            specs[plr] = true
-        end
+        if getplayertype(plr) ~= 0 then return end
+        
+        speccounter = speccounter + 1
+        specs[plr] = true
     end)
 
     if speccounter > 9 then speccounter = 9 end
