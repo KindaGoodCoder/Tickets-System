@@ -1,12 +1,7 @@
 require "Tickets-System/spawnwave"
 
 playertypes = {} -- List to hold all player roles. Playerid will be used as index for the list. The value of the index is the player's role
-
-scps = {5,6,10,11,12,13,14,15,16} --Team roles
-found = {1,2,4,8,9,0,0,0,0}
-
 mtftext, chaostext = 0
-
 debounce = false
 
 function OnScriptLoaded() --Server tool will load script regardless of error. If Tickets does not print on ServerLoaded, tickets.gs is bugged
@@ -15,19 +10,32 @@ function OnScriptLoaded() --Server tool will load script regardless of error. If
     return -1
 end
 
+function GetTeam(role)
+    local scps = {5,6,10,11,12,14,15,16} --Skip role 13 cause idk
+    local found = {1,2,4,8,9,0,0,0}
+    local cd = {3,7,0,0,0,0,0,0} --Looks familiar?
+    
+    for y = 1, 9 do
+        if role == scps[y] then return "scp"
+        elseif role == found[y] then return "found"
+        elseif role == cd[y] then return "chaos"
+    end
+    return false --Fallback
+end
+
 function OnPlayerGetNewRole(player,_,role)
-    playertypes[player] = role--Add their role to the list under the playerid
+    playertypes[player] = role --Add their role to the list under the playerid
 
     plr_loop(function(plr)            
         removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
         removeplayertext(plr, mtftext)
 
-        if getplayertype(plr) == 0 then --if Spec
-            role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
-            player = getplayermonitorheight(plr)
-            mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
-            chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
-        end
+        if getplayertype(plr) ~= 0 then return end --if not Spec end function now
+            
+        role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
+        player = getplayermonitorheight(plr)
+        mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
+        chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
     end)
 
     return -1
@@ -36,43 +44,19 @@ end
 function OnPlayerConnect(plr) OnPlayerGetNewRole(plr,_,0); return -1 end
 
 function OnPlayerKillPlayer(shooter,shootee)
-    local killerrole = getplayertype(shooter)
+    local killerrole = GetTeam(shooter)
     local role = playertypes[shootee] --find shootee role from list
-    if killerrole == 7 or killerrole == 3 then --if CD team
-        for y = 1, 9 do
-            if role == found[y] or role == 13 then
-                chaosticks = chaosticks + 1
-                break -- If died is Security plr or SCP 049-2
-            elseif role == scps[y] then
-                chaosticks = chaosticks + 2
-                break
-            end --if died is SCP
-        end
-
-    else
-
-        for y = 1, 5 do --to loop tho Security role list
-
-            if killerrole == found[y] then
-
-                if role == 7 or role == 13 then mtfticks = mtfticks + 1 --Dont get tickets for killing innocent Class D
-                else 
-                    for scp = 0, 9 do 
-                        if role == scps[scp] then
-                            mtfticks = mtfticks + 3
-                            break 
-                        end 
-                    end 
-                end
-                --They can get paid now
-                break --break the y loop
-
-            end
-        end
         
-    end
-
-    return -1
+    if killerrole == "chaos" then --if CD team        
+        if GetTeam(role) == "found" or role == 13 then chaosticks = chaosticks + 1 --If died is Security plr or SCP 049-2
+        elseif GetTeam(role) == "scp" then chaosticks = chaosticks + 2 end --if died is SCP
+    elseif killerrole == "found" then --If Foundation 
+        if role == 7 or role == 13 then mtfticks = mtfticks + 1 --Dont get tickets for killing "innocent" Class D
+        elseif GetTeam(Role) == "scp" then mtfticks = mtfticks + 3 end
+        --They can get paid now
+     end
+        
+     return -1
 end
 
 function OnPlayerEscape(_,escaped) 
@@ -112,12 +96,11 @@ function spawntimer(mins,secs) --looks familiar. Creates a timer which at end of
         end
 
         plr_loop(function(plr)
-            if getplayertype(plr) == 0 then
-                local screen_width = getplayermonitorwidth(plr)
-                local screen_height = getplayermonitorheight(plr)
-                sec = createplayertext(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) -- text to wipe
-                createtimer("wipeout",1000,0,plr,sec)
-            end
+            if getplayertype(plr) ~= 0 then return end
+            local screen_width = getplayermonitorwidth(plr)
+            local screen_height = getplayermonitorheight(plr)
+            sec = createplayertext(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) -- text to wipe
+            createtimer("wipeout",1000,0,plr,sec)
         end)
 
     end
@@ -199,7 +182,7 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
         end
         -- .gsub() basically deletes all non-number characters in this case. Technically if u write 1setmtftickets 10, you just set mtfticks to 110
     end
-
+ 
     if string.find(msg, "setmtftickets") then mtfticks = settickets("MTF Tickets set to %d")
     elseif string.find(msg, "setchaostickets") then chaosticks = settickets("Chaos Tickets set to %d")
     elseif string.find(msg, "spawntimer") then
