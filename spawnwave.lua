@@ -4,23 +4,34 @@ end
 
 mtfticks,chaosticks = 0,0
 
-function plr_loop(Run_Function)
-    for plr = 1, 64 do
-        if isplayerconnected(plr) == 1 then
-            if not pcall(function() Run_Function(plr) end) then break end
-        end
-    end
-end
+function plr_loop(Run_Function) for plr = 1, 64 do if isplayerconnected(plr) == 1 then Run_Function(plr) end end end
 --Input a function which will run for every connected player
 
 function Spawn(tickets,role)
-    local speccounter    
-    while (tickets > 0 and speccounter < 9) do --until tickets=0 or players spawn reach max of 9 operators, run
-        plr = math.random(64) --pick random player
-        if isplayerconnected(plr) == 0 or getplayerrole(plr) ~= 0 then break end
-        setplayertype(plr,role)
-        tickets = tickets - 1
-        speccounter = speccounter + 1
+    local speccounter = 0
+    local specs = {}
+
+    plr_loop(function(plr)
+        if getplayertype(plr) == 0 then
+            speccounter = speccounter + 1
+            specs[plr] = true
+        end
+    end)
+
+    if speccounter > 9 then speccounter = 9 end
+
+    while (tickets > 0 and speccounter > 0) do --until tickets=0 or players spawn reach max of 9 operators, run
+        local loop = function()
+            index = math.random(64) --pick random player
+            plr = specs[index]
+
+            if getplayertype(plr) ~= 0 or not plr then return end --In this loop return acts as a continue statement, which doesn't exist in Lua
+            
+            setplayertype(plr,role)
+            tickets = tickets - 1
+            speccounter = speccounter - 1
+        end
+        loop()
     end
 
     breakspawn() --I dont even know
@@ -44,7 +55,7 @@ function spawnchaos()
     chaosticks = Spawn(chaosticks,7)
     servermessage("Chaos Insurgency Strike Team detected")
     
-    if type(OnSpawnChaos) == "function" then announc(OnSpawnChaos()) end --
+    if type(OnSpawnChaos) == "function" then announc(OnSpawnChaos()) end
     return -1
 end
 

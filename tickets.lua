@@ -16,11 +16,13 @@ function GetTeam(role)
     local cd = {3,7,0,0,0,0,0,0} --Looks familiar?
     
     for y = 1, 9 do
-        if role == scps[y] then return "scp"
-        elseif role == found[y] then return "found"
-        elseif role == cd[y] then return "chaos"
+        local select = {
+            [scps[y]] = "scp",
+            [found[y]] = "found",
+            [cd[y]] = "chaos"
+        }
+        return select[role]
     end
-    return false --Fallback
 end
 
 function OnPlayerGetNewRole(player,_,role)
@@ -30,8 +32,8 @@ function OnPlayerGetNewRole(player,_,role)
         removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
         removeplayertext(plr, mtftext)
 
-        if getplayertype(plr) ~= 0 then return end --if not Spec end function now
-            
+        if getplayertype(plr) ~= 0 then return end --if not Spec skip to next player
+
         role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
         player = getplayermonitorheight(plr)
         mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
@@ -47,16 +49,17 @@ function OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetTeam(shooter)
     local role = playertypes[shootee] --find shootee role from list
         
-    if killerrole == "chaos" then --if CD team        
+    if killerrole == "chaos" then --if CD team
         if GetTeam(role) == "found" or role == 13 then chaosticks = chaosticks + 1 --If died is Security plr or SCP 049-2
         elseif GetTeam(role) == "scp" then chaosticks = chaosticks + 2 end --if died is SCP
-    elseif killerrole == "found" then --If Foundation 
+
+    elseif killerrole == "found" then --If Foundation
         if role == 7 or role == 13 then mtfticks = mtfticks + 1 --Dont get tickets for killing "innocent" Class D
         elseif GetTeam(Role) == "scp" then mtfticks = mtfticks + 3 end
         --They can get paid now
-     end
+    end
         
-     return -1
+    return -1
 end
 
 function OnPlayerEscape(_,escaped) 
@@ -66,45 +69,45 @@ function OnPlayerEscape(_,escaped)
 end
 
 function spawntimer(mins,secs) --looks familiar. Creates a timer which at end of spawns team with most tickets.
-    if debounce then
-        mins,secs = tonumber(mins),tonumber(secs)
-        local sec
+    if debounce then return -1 end
 
-        if secs < 10 then sec = "0"..secs --declare display variable
-        else sec = secs end
+    mins,secs = tonumber(mins),tonumber(secs)
+    local sec
 
-        local spawntext = string.format("Next Reinforcement Spawn wave in %d:%s",mins,sec) --Reinforcement timer text
+    if secs < 10 then sec = "0"..secs --declare display variable
+    else sec = secs end
 
-        if secs == 0 then
-            if mins == 0 then --if mins and secs = 0, timer finished
-                spawnwave()
-                spawntimer(5,0)
-                return -1 --timer finished
-            else --if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
-                mins = mins - 1
-                secs = 60
-            end
+    local spawntext = string.format("Next Reinforcement Spawn wave in %d:%s",mins,sec) --Reinforcement timer text
+
+    if secs == 0 then
+        if mins == 0 then --if mins and secs = 0, timer finished
+            spawnwave()
+            spawntimer(5,0)
+            return -1 --timer finished
+        else --if mins didnt equal 0, then a minute passed , subtract 1 from min and reset secs
+            mins = mins - 1
+            secs = 60
         end
-
-        recursive = function() spawntimer(mins,secs-1); return -1 end
-        createtimer("recursive", 1000, 0) --restart function with secs - 1
-
-        wipeout = function(plr,txt) 
-            plr,txt = tonumber(plr),tonumber(txt)
-            if isplayerconnected(plr) == 1 then removeplayertext(plr,txt) end
-            return -1
-        end
-
-        plr_loop(function(plr)
-            if getplayertype(plr) ~= 0 then return end
-            local screen_width = getplayermonitorwidth(plr)
-            local screen_height = getplayermonitorheight(plr)
-            sec = createplayertext(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) -- text to wipe
-            createtimer("wipeout",1000,0,plr,sec)
-        end)
-
     end
 
+    recursive = function() spawntimer(mins,secs-1); return -1 end
+    createtimer("recursive", 1000, 0) --restart function with secs - 1
+
+    wipeout = function(plr,txt) 
+        plr,txt = tonumber(plr),tonumber(txt)
+        if isplayerconnected(plr) == 1 then removeplayertext(plr,txt) end
+        return -1
+    end
+
+    plr_loop(function(plr)
+        if getplayertype(plr) ~= 0 then return end
+
+        local screen_width = getplayermonitorwidth(plr)
+        local screen_height = getplayermonitorheight(plr)
+        sec = createplayertext(plr, spawntext, screen_width/45, screen_height/8,  123456, "DS-DIGITAL.ttf",50) -- text to wipe
+        createtimer("wipeout",1000,0,plr,sec)
+    end)
+    
     return -1
 end
 
@@ -149,12 +152,13 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
         if team == "mtf" then tickets = mtfticks
         else tickets = chaosticks end
 
-        if tickets > 0 then
+        if tickets < 0 then txt = "[Tickets] Listen to RCON"
+        else
             debounce = false
             createtimer("spawn"..team,0,0) --Easier to set spawnwave as string
             createtimer("spawnfix",2000,0) -- Fix spawntimer
             txt = string.format("[Ignore RCON] %s Successfully Spawned",team)
-        else txt = "[Tickets] Listen to RCON" end
+        end
 
         sendmessage(plr, txt)
     end
@@ -186,7 +190,7 @@ function OnPlayerConsole(plr,msg) --bunch of commands to override the old ones
     if string.find(msg, "setmtftickets") then mtfticks = settickets("MTF Tickets set to %d")
     elseif string.find(msg, "setchaostickets") then chaosticks = settickets("Chaos Tickets set to %d")
     elseif string.find(msg, "spawntimer") then
-        debounce = false        
+        debounce = false
         newspawnfix = function()
             debounce = true
             spawntimer(settickets("Spawn timer set to %d minutes"),0)
