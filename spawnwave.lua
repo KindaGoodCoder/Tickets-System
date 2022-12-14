@@ -13,27 +13,26 @@ function Spawn(tickets,role)
 
     plr_loop(function(plr)
         if getplayertype(plr) ~= 0 then return end
-        
+
         speccounter = speccounter + 1
         specs[plr] = true
     end)
 
     if speccounter > 9 then speccounter = 9 end
 
-    while (tickets > 0 and speccounter > 0) do --until tickets=0 or players spawn reach max of 9 operators, run
-        local loop = function()
-            index = math.random(64) --pick random player
-            plr = specs[index]
+    local loop = function() --Will be looped over inside a while loop
+        index = math.random(64) --pick random player
+        plr = specs[index]
 
-            if getplayertype(plr) ~= 0 or not plr then return end --In this loop return acts as a continue statement, which doesn't exist in Lua
-            
-            setplayertype(plr,role)
-            tickets = tickets - 1
-            speccounter = speccounter - 1
-        end
-        loop()
+        if getplayertype(plr) ~= 0 or not plr then return end --In this loop return acts as a continue statement, which doesn't exist in Lua
+        
+        setplayertype(plr,role)
+        tickets = tickets - 1
+        speccounter = speccounter - 1
     end
 
+    while (tickets > 0 and speccounter > 0) do loop() end --until tickets=0 or players spawn reach max of 9 operators, run
+    
     breakspawn() --I dont even know
     return tickets -- Return how many tickets are left
 end
