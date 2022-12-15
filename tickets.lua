@@ -56,7 +56,7 @@ function OnPlayerKillPlayer(shooter,shootee)
 
     elseif killerrole == "found" then --If Foundation
         if role == 7 or role == 13 then mtfticks = mtfticks + 1 --Dont get tickets for killing "innocent" Class D
-        elseif GetTeam(Role) == "scp" then mtfticks = mtfticks + 3 end
+        elseif GetTeam(role) == "scp" then mtfticks = mtfticks + 3 end
         --They can get paid now
     end
         
@@ -129,13 +129,6 @@ function OnServerRestart() debounce = false; return -1 end --If the server for s
 function OnDeactivateWarheads() spawnfix(); return -1 end --All units return, warheads disabled
 
 function OnRoundStarted()
-    breakspawn = function()
-        setmtftickets(0)
-        setchaostickets(0)
-        setserverspawntimeout(100000000000000) -- If tickets does not stop u, good luck waiting that long
-        return -1
-    end
-
     mtfticks = 24
     chaosticks = 18 -- Default values for tickets
     createtimer("breakspawn",5000,0) -- Good luck using the old spawn system without tickets
