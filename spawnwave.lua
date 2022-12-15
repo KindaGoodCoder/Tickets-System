@@ -4,27 +4,39 @@ end
 
 mtfticks,chaosticks = 0,0
 
-function plr_loop(Run_Function) for plr = 1, 64 do if isplayerconnected(plr) == 1 then Run_Function(plr) end end end
+function plr_loop(Run_Function)
+    for plr = 1, 64 do
+        if isplayerconnected(plr) == 1 then
+            if not pcall(function() Run_Function(plr) end) then break end
+        end
+    end
+end
 --Input a function which will run for every connected player
+
+
+function breakspawn()
+    setmtftickets(0)
+    setchaostickets(0)
+    setserverspawntimeout(100000000000000) -- If tickets does not stop u, good luck waiting that long
+    return -1
+end
 
 function Spawn(tickets,role)
     local speccounter = 0
-    local specs = {}
 
     plr_loop(function(plr)
         if getplayertype(plr) ~= 0 then return end
 
         speccounter = speccounter + 1
-        specs[plr] = true
+        if speccounter > 9 then speccounter = 9; error("Max Spawnwave Limit Reached, Ending Spawn. Ignore Error") end
     end)
 
-    if speccounter > 9 then speccounter = 9 end
+    
 
     local loop = function() --Will be looped over inside a while loop
-        index = math.random(64) --pick random player
-        plr = specs[index]
+        plr = math.random(64) --pick random player
 
-        if getplayertype(plr) ~= 0 or not plr then return end --In this loop return acts as a continue statement, which doesn't exist in Lua
+        if getplayertype(plr) ~= 0 or isplayerconnected(plr) == 0 then return end --In this loop return acts as a continue statement, which doesn't exist in Lua
         
         setplayertype(plr,role)
         tickets = tickets - 1
