@@ -70,7 +70,7 @@ function OnPlayerEscape(_,escaped)
 end
 
 function spawntimer(mins,secs) --looks familiar. Creates a timer which at end of spawns team with most tickets.
-    if debounce then return -1 end
+    if not debounce then return -1 end
 
     mins,secs = tonumber(mins),tonumber(secs)
     local sec
