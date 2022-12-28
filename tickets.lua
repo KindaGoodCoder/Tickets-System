@@ -28,19 +28,6 @@ end
 
 function OnPlayerGetNewRole(player,_,role)
     playertypes[player] = role --Add their role to the list under the playerid
-
-    plr_loop(function(plr)            
-        removeplayertext(plr, chaostext) --Remove text on all players screen, shouldnt cause error
-        removeplayertext(plr, mtftext)
-
-        if getplayertype(plr) ~= 0 then return end --if not Spec skip to next player
-
-        role = getplayermonitorwidth(plr)/2.56 -- Use these variable that have no purpose now
-        player = getplayermonitorheight(plr)
-        mtftext = createplayertext(plr,"MTF Tickets: "..mtfticks, role, player/1.6, 255,"Courier New Rus.ttf",40)
-        chaostext = createplayertext(plr,"Chaos Tickets: "..chaosticks, role, player/1.3, 25600, "Courier New Rus.ttf",40) --Show tickets for both teams
-    end)
-
     return -1
 end
 
