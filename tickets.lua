@@ -15,7 +15,7 @@ function GetTeam(role)
     local found = {1,2,4,8,9,0,0,0}
     local cd = {3,7,0,0,0,0,0,0} --Looks familiar?
     
-    for y = 1, 9 do
+    for y = 1, 8 do
         local select = {
             [scps[y]] = "scp",
             [found[y]] = "found",
