@@ -39,7 +39,6 @@ function OnPlayerConnect(plr) OnPlayerGetNewRole(plr,_,0); return -1 end
 
 function OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetTeam(getplayertype(shooter))
-    print(killerrole)
     local role = playertypes[shootee] --find shootee role from list
         
     if killerrole == "chaos" then --if CD team
