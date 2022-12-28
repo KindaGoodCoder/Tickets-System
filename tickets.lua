@@ -27,7 +27,11 @@ function GetTeam(role)
 end
 
 function OnPlayerGetNewRole(player,_,role)
-    playertypes[player] = role --Add their role to the list under the playerid
+    timer = function()
+        playertypes[player] = role --Add their role to the list under the playerid
+    end
+    createtimer("timer",2000,0)
+    
     return -1
 end
 
