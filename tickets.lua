@@ -35,8 +35,6 @@ function OnPlayerGetNewRole(player,_,role)
     return -1
 end
 
-function OnPlayerConnect(plr) OnPlayerGetNewRole(plr,_,0); return -1 end
-
 function OnPlayerKillPlayer(shooter,shootee)
     local killerrole = GetTeam(getplayertype(shooter))
     local role = playertypes[shootee] --find shootee role from list
@@ -44,11 +42,9 @@ function OnPlayerKillPlayer(shooter,shootee)
     if killerrole == "chaos" then --if CD team
         if GetTeam(role) == "found" or role == 13 then chaosticks = chaosticks + 1 --If died is Security plr or SCP 049-2
         elseif GetTeam(role) == "scp" then chaosticks = chaosticks + 2 end --if died is SCP
-        print(chaosticks)
     elseif killerrole == "found" then --If Foundation
         if role == 7 or role == 13 then mtfticks = mtfticks + 1 --Dont get tickets for killing "innocent" Class D
         elseif GetTeam(role) == "scp" then mtfticks = mtfticks + 3 end
-        print(mtfticks)
         --They can get paid now
     end
     
